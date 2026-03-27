@@ -6,41 +6,71 @@
   <title>Audiogram HTML Generator – Oosai Hearingaid Centre</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 30px 16px; }
-    .card { background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); max-width: 980px; margin: 0 auto; padding: 36px; }
-    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; border-bottom: 1.5px solid #eef1f6; padding-bottom: 22px; }
-    .logo-circle { width: 48px; height: 48px; border-radius: 50%; background: #004aad; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
-    .header h1 { font-size: 18px; color: #111; font-weight: 700; }
-    .header p { font-size: 13px; color: #888; margin-top: 3px; }
-    .section-label { font-size: 11px; font-weight: 700; color: #999; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-    .formula-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .formula-btn { padding: 7px 16px; font-size: 12px; border-radius: 20px; cursor: pointer; font-weight: 600; border: 1.5px solid #e0e5ef; background: #fff; color: #555; transition: all 0.18s; font-family: 'DM Sans', sans-serif; }
-    .formula-btn.active { background: #004aad; color: #fff; border-color: #004aad; }
-    .pta-live { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
-    .pta-pill { background: #f0f4ff; border: 1.5px solid #c5d3f5; border-radius: 10px; padding: 10px 18px; min-width: 160px; }
-    .pta-pill .pill-label { font-size: 11px; color: #6680c4; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .pta-pill .pill-value { font-size: 22px; font-weight: 700; color: #004aad; font-family: 'DM Mono', monospace; }
-    .pta-pill .pill-grade { font-size: 11px; margin-top: 3px; font-weight: 600; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#f0f4f8;min-height:100vh;padding:30px 16px;}
+    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);max-width:1060px;margin:0 auto;padding:36px;}
+    .header{display:flex;align-items:center;gap:16px;margin-bottom:32px;border-bottom:1.5px solid #eef1f6;padding-bottom:22px;}
+    .logo-circle{width:48px;height:48px;border-radius:50%;background:#004aad;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
+    .header h1{font-size:18px;color:#111;font-weight:700;}
+    .header p{font-size:13px;color:#888;margin-top:3px;}
+    .section-label{font-size:11px;font-weight:700;color:#999;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+    .formula-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+    .formula-btn{padding:7px 16px;font-size:12px;border-radius:20px;cursor:pointer;font-weight:600;border:1.5px solid #e0e5ef;background:#fff;color:#555;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
+    .formula-btn.active{background:#004aad;color:#fff;border-color:#004aad;}
+    .pta-live{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+    .pta-pill{background:#f0f4ff;border:1.5px solid #c5d3f5;border-radius:10px;padding:10px 18px;min-width:160px;}
+    .pta-pill .pill-label{font-size:11px;color:#6680c4;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .pta-pill .pill-value{font-size:22px;font-weight:700;color:#004aad;font-family:'DM Mono',monospace;}
+    .pta-pill .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
     .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
-    table.grid { width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 13px; }
-    table.grid th { background: #004aad; color: #fff; padding: 9px 6px; text-align: center; font-size: 12px; font-weight: 600; }
-    table.grid th.row-h { text-align: left; padding-left: 14px; width: 70px; }
-    table.grid td { border: 1px solid #e8ecf3; padding: 4px 4px 2px; text-align: center; vertical-align: top; }
-    table.grid td.row-label { background: #f0f4ff; font-weight: 700; font-size: 12px; color: #004aad; text-align: left; padding-left: 14px; vertical-align: middle; }
+
+    /* PTA source selector */
+    .pta-source{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+    .pta-source label{font-size:12px;color:#666;font-weight:600;}
+    .pta-source select{padding:6px 10px;font-size:12px;border:1.5px solid #e0e5ef;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
+
+    /* Grid */
+    .grid-scroll{overflow-x:auto;margin-bottom:28px;}
+    table.grid{width:100%;border-collapse:collapse;font-size:12px;min-width:700px;}
+    table.grid th{background:#004aad;color:#fff;padding:8px 5px;text-align:center;font-size:11px;font-weight:600;}
+    table.grid th.row-h{text-align:left;padding-left:12px;width:90px;}
+    table.grid td{border:1px solid #e8ecf3;padding:3px 3px 2px;text-align:center;vertical-align:top;}
+    table.grid td.row-label{font-weight:700;font-size:11px;text-align:left;padding-left:10px;vertical-align:middle;white-space:nowrap;}
+    table.grid td.row-label.re{background:#fff2f2;color:#c0392b;}
+    table.grid td.row-label.le{background:#f0f4ff;color:#1a5fb5;}
     table.grid tr:nth-child(even) td:not(.row-label){background:#fafbfd;}
     table.grid tr:nth-child(odd) td:not(.row-label){background:#fff;}
-    table.grid input[type=text] { width: 52px; border: 1.5px solid #e0e5ef; border-radius: 6px; padding: 5px 4px; text-align: center; font-size: 13px; font-family: 'DM Sans', sans-serif; color: #1a1a1a; outline: none; transition: border 0.2s, background 0.2s; background: transparent; }
+    /* cell wrapper */
+    .cell-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+    table.grid input[type=text]{width:46px;border:1.5px solid #e0e5ef;border-radius:5px;padding:4px 3px;text-align:center;font-size:12px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border 0.2s,background 0.2s;background:transparent;}
     table.grid input[type=text]:focus{border-color:#004aad;background:#eef3ff;}
     table.grid input[type=text].highlight{background:#fffbe6;border-color:#f5c518;}
-    .hint{display:block;font-size:9px;color:#ccc;margin-top:2px;font-family:'DM Mono',monospace;}
+    .nr-wrap{display:flex;align-items:center;gap:3px;font-size:9px;color:#aaa;}
+    .nr-wrap input[type=checkbox]{width:12px;height:12px;cursor:pointer;accent-color:#c0392b;}
+    .hint{display:block;font-size:8px;color:#ddd;margin-top:1px;font-family:'DM Mono',monospace;}
+
+    /* section dividers in grid */
+    .group-header td{background:#e8ecf3!important;font-size:10px;font-weight:700;color:#666;padding:4px 10px;text-align:left;letter-spacing:0.5px;}
+
     .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
     button{padding:10px 22px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:600;border:none;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
     .btn-primary{background:#004aad;color:#fff;}.btn-primary:hover{background:#003a8c;}
     .btn-clear{background:#f0f2f5;color:#555;}.btn-clear:hover{background:#e4e7ed;}
+
+    /* chart */
     .chart-wrapper{margin-bottom:28px;border:1.5px solid #e4e8f0;border-radius:12px;overflow:hidden;}
     .chart-header{background:#f7f9fc;padding:10px 16px;border-bottom:1px solid #e4e8f0;font-size:12px;font-weight:700;color:#444;}
     .chart-inner{padding:16px;background:#fff;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+
+    /* legend */
+    .legend-box{background:#f8f9fb;border:1px solid #e4e8f0;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;gap:24px;flex-wrap:wrap;}
+    .legend-group{display:flex;flex-direction:column;gap:6px;}
+    .legend-group .lg-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+    .legend-group .lg-title.re{color:#c0392b;}.legend-group .lg-title.le{color:#1a5fb5;}
+    .legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:#555;}
+    .legend-item svg{flex-shrink:0;}
+
+    /* output */
     .outputs-wrapper{display:none;}
     .output-block{border:1.5px solid #e4e8f0;border-radius:12px;overflow:hidden;}
     .output-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f7f9fc;border-bottom:1px solid #e4e8f0;}
@@ -69,14 +99,59 @@
     </div>
   </div>
 
-  <div class="badge"><span class="badge-dot"></span>  compatible · Auto PTA · Live Chart · Single HTML output</div>
+  <div class="badge"><span class="badge-dot"></span>  compatible · Auto PTA · Full symbol set · Single HTML output</div>
 
+  <!-- Symbol Legend -->
+  <div class="section-label">Symbol Reference</div>
+  <div class="legend-box">
+    <div class="legend-group">
+      <div class="lg-title re">Right Ear (Red)</div>
+      <div class="legend-item"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="white" stroke="#c0392b" stroke-width="1.8"/></svg> AC Unmasked</div>
+      <div class="legend-item"><svg width="14" height="14"><polygon points="7,2 12,12 2,12" fill="white" stroke="#c0392b" stroke-width="1.8"/></svg> AC Masked</div>
+      <div class="legend-item"><svg width="14" height="14"><polygon points="12,7 5,3 5,11" fill="#c0392b"/></svg> BC Unmasked</div>
+      <div class="legend-item"><svg width="14" height="14"><polyline points="10,2 4,2 4,12 10,12" fill="none" stroke="#c0392b" stroke-width="2"/></svg> BC Masked</div>
+      <div class="legend-item"><svg width="16" height="14"><circle cx="5" cy="5" r="4" fill="white" stroke="#c0392b" stroke-width="1.5"/><line x1="8" y1="8" x2="14" y2="14" stroke="#c0392b" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#c0392b"/></svg> No Response AC</div>
+      <div class="legend-item"><svg width="16" height="14"><polygon points="5,7 1,3 1,11" fill="#c0392b"/><line x1="5" y1="7" x2="14" y2="14" stroke="#c0392b" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#c0392b"/></svg> No Response BC</div>
+    </div>
+    <div class="legend-group">
+      <div class="lg-title le">Left Ear (Blue)</div>
+      <div class="legend-item"><svg width="14" height="14"><line x1="2" y1="2" x2="12" y2="12" stroke="#1a5fb5" stroke-width="2"/><line x1="12" y1="2" x2="2" y2="12" stroke="#1a5fb5" stroke-width="2"/></svg> AC Unmasked</div>
+      <div class="legend-item"><svg width="14" height="14"><polygon points="7,12 2,2 12,2" fill="white" stroke="#1a5fb5" stroke-width="1.8"/></svg> AC Masked</div>
+      <div class="legend-item"><svg width="14" height="14"><polygon points="2,7 9,3 9,11" fill="#1a5fb5"/></svg> BC Unmasked</div>
+      <div class="legend-item"><svg width="14" height="14"><polyline points="4,2 10,2 10,12 4,12" fill="none" stroke="#1a5fb5" stroke-width="2"/></svg> BC Masked</div>
+      <div class="legend-item"><svg width="16" height="14"><line x1="2" y1="2" x2="9" y2="9" stroke="#1a5fb5" stroke-width="2"/><line x1="9" y1="2" x2="2" y2="9" stroke="#1a5fb5" stroke-width="2"/><line x1="5" y1="8" x2="14" y2="14" stroke="#1a5fb5" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#1a5fb5"/></svg> No Response AC</div>
+      <div class="legend-item"><svg width="16" height="14"><polygon points="9,7 13,3 13,11" fill="#1a5fb5"/><line x1="9" y1="7" x2="14" y2="14" stroke="#1a5fb5" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#1a5fb5"/></svg> No Response BC</div>
+    </div>
+    <div class="legend-group" style="justify-content:flex-end;">
+      <div class="lg-title" style="color:#888;">Notes</div>
+      <div style="font-size:11px;color:#777;max-width:200px;line-height:1.6;">
+        <b>Masked</b> = masking applied to opposite ear to prevent cross-hearing.<br><br>
+        <b>No Response</b> = tick the NR checkbox — symbol is plotted with a downward arrow at max dB.
+      </div>
+    </div>
+  </div>
+
+  <!-- Formula -->
   <div class="section-label">PTA Formula</div>
   <div class="formula-row">
     <button class="formula-btn active" id="f3btn" onclick="setFormula(3)">Standard (500 + 1k + 2k) ÷ 3</button>
     <button class="formula-btn" id="f4btn" onclick="setFormula(4)">Fletcher (500 + 1k + 2k + 4k) ÷ 4</button>
   </div>
 
+  <!-- PTA source -->
+  <div class="pta-source">
+    <label>Calculate PTA from:</label>
+    <select id="pta-src-lt" onchange="recalc()">
+      <option value="ACL">LT — AC Unmasked</option>
+      <option value="ACL_M">LT — AC Masked</option>
+    </select>
+    <select id="pta-src-rt" onchange="recalc()">
+      <option value="ACR">RT — AC Unmasked</option>
+      <option value="ACR_M">RT — AC Masked</option>
+    </select>
+  </div>
+
+  <!-- PTA pills -->
   <div class="pta-live">
     <div class="pta-pill">
       <div class="pill-label">LT — Left Ear</div>
@@ -90,27 +165,31 @@
     </div>
   </div>
 
-  <div class="section-label">Audiogram Values <span style="font-size:10px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:400;">— yellow cells used in PTA calculation</span></div>
-  <table class="grid">
-    <thead>
-      <tr>
-        <th class="row-h"></th>
-        <th>125</th><th>250</th><th>500</th><th>1k</th><th>2k</th><th>4k</th><th>6k</th><th>8k</th>
-      </tr>
-    </thead>
-    <tbody id="grid-body"></tbody>
-  </table>
+  <!-- Grid -->
+  <div class="section-label">Audiogram Values <span style="font-size:10px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:400;">— yellow = PTA frequencies · NR = No Response</span></div>
+  <div class="grid-scroll">
+    <table class="grid">
+      <thead>
+        <tr>
+          <th class="row-h">Row</th>
+          <th>125</th><th>250</th><th>500</th><th>1k</th><th>2k</th><th>4k</th><th>6k</th><th>8k</th>
+        </tr>
+      </thead>
+      <tbody id="grid-body"></tbody>
+    </table>
+  </div>
 
+  <!-- Live Chart -->
   <div class="chart-wrapper">
     <div class="chart-header">Live Audiogram Chart <span style="font-size:11px;font-weight:400;color:#999;margin-left:10px;">Updates as you type · Right = red · Left = blue</span></div>
     <div class="chart-inner">
       <div style="text-align:center;">
         <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:6px;">RIGHT EAR</div>
-        <canvas id="chartRight" width="380" height="340"></canvas>
+        <canvas id="chartRight" width="400" height="360"></canvas>
       </div>
       <div style="text-align:center;">
         <div style="font-size:11px;font-weight:700;color:#1a5fb5;margin-bottom:6px;">LEFT EAR</div>
-        <canvas id="chartLeft" width="380" height="340"></canvas>
+        <canvas id="chartLeft" width="400" height="360"></canvas>
       </div>
     </div>
   </div>
@@ -129,7 +208,7 @@
       <div class="output-box" id="out1"></div>
     </div>
     <div class="preview-section">
-      <div class="section-label">Preview — how it will look in </div>
+      <div class="section-label">Preview</div>
       <div class="preview-box">
         <div class="preview-box-label">Rendered Output</div>
         <div id="prev1"></div>
@@ -138,167 +217,366 @@
   </div>
 
   <div class="tip">
-    <strong>How to use:</strong> Fill in the audiogram values → Click "Generate HTML Output" → Copy and paste into a <strong>single description field</strong> in .<br>
-    Yellow cells = frequencies used in the PTA formula. Leave blank if not tested → appears as <code>___</code>.
+    <strong>How to use:</strong> Fill in values → tick <code>NR</code> if patient had no response → Click "Generate HTML Output" → Copy into  description.<br>
+    Yellow cells = PTA frequencies. Use the dropdowns above to switch PTA source between unmasked and masked AC.
   </div>
 </div>
 
 <script>
-  const rows=['ACL','ACR','BCL','BCR'];
-  const freqs=['125','250','500','1k','2k','4k','6k','8k'];
-  const ptaFreqs3=['500','1k','2k'], ptaFreqs4=['500','1k','2k','4k'];
-  const DB_MIN=-10, DB_MAX=120;
-  let formula=3;
+// ── Data model ────────────────────────────────────────────────
+// Rows: ACR, ACR_M, BCR, BCR_M, ACL, ACL_M, BCL, BCL_M
+const ROWS = [
+  {id:'ACR',   label:'AC Unmasked', ear:'RE', type:'ac',  masked:false},
+  {id:'ACR_M', label:'AC Masked',   ear:'RE', type:'ac',  masked:true},
+  {id:'BCR',   label:'BC Unmasked', ear:'RE', type:'bc',  masked:false},
+  {id:'BCR_M', label:'BC Masked',   ear:'RE', type:'bc',  masked:true},
+  {id:'ACL',   label:'AC Unmasked', ear:'LE', type:'ac',  masked:false},
+  {id:'ACL_M', label:'AC Masked',   ear:'LE', type:'ac',  masked:true},
+  {id:'BCL',   label:'BC Unmasked', ear:'LE', type:'bc',  masked:false},
+  {id:'BCL_M', label:'BC Masked',   ear:'LE', type:'bc',  masked:true},
+];
+const FREQS = ['125','250','500','1k','2k','4k','6k','8k'];
+const PTA3 = ['500','1k','2k'], PTA4 = ['500','1k','2k','4k'];
+const DB_MIN=-10, DB_MAX=120;
+let formula=3;
 
-  // Build grid
-  const tbody=document.getElementById('grid-body');
-  rows.forEach(row=>{
-    const tr=document.createElement('tr');
-    let html=`<td class="row-label">${row}</td>`;
-    freqs.forEach(f=>{ html+=`<td><input type="text" id="${row}_${f}" maxlength="5" placeholder="" oninput="recalc()"><span class="hint">${row}_${f}</span></td>`; });
-    tr.innerHTML=html; tbody.appendChild(tr);
+// ── Build grid ────────────────────────────────────────────────
+const tbody = document.getElementById('grid-body');
+let lastEar = '';
+ROWS.forEach(row => {
+  if (row.ear !== lastEar) {
+    const sep = document.createElement('tr');
+    sep.className = 'group-header';
+    sep.innerHTML = `<td colspan="9">${row.ear === 'RE' ? '🔴 RIGHT EAR (RE)' : '🔵 LEFT EAR (LE)'}</td>`;
+    tbody.appendChild(sep);
+    lastEar = row.ear;
+  }
+  const tr = document.createElement('tr');
+  const earCls = row.ear === 'RE' ? 're' : 'le';
+  let html = `<td class="row-label ${earCls}">${row.label}</td>`;
+  FREQS.forEach(f => {
+    const cellId = `${row.id}_${f}`;
+    const nrId = `NR_${row.id}_${f}`;
+    html += `<td>
+      <div class="cell-wrap">
+        <input type="text" id="${cellId}" maxlength="5" placeholder="" oninput="recalc()">
+        <div class="nr-wrap"><input type="checkbox" id="${nrId}" onchange="recalc()" title="No Response"><span>NR</span></div>
+      </div>
+    </td>`;
   });
+  tr.innerHTML = html;
+  tbody.appendChild(tr);
+});
 
-  function setFormula(n){ formula=n; document.getElementById('f3btn').className='formula-btn'+(n===3?' active':''); document.getElementById('f4btn').className='formula-btn'+(n===4?' active':''); updateHighlights(); recalc(); }
-  function updateHighlights(){ const a=formula===3?ptaFreqs3:ptaFreqs4; ['ACL','ACR'].forEach(r=>freqs.forEach(f=>{ const el=document.getElementById(`${r}_${f}`); if(el) el.className=a.includes(f)?'highlight':''; })); }
-  function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
-  function numVal(id){ const v=parseFloat(val(id)); return isNaN(v)?null:v; }
-  function calcPTA(ear){ const p=ear==='L'?'ACL':'ACR'; const a=formula===3?ptaFreqs3:ptaFreqs4; const vs=a.map(f=>numVal(`${p}_${f}`)).filter(v=>v!==null); if(!vs.length) return null; return vs.reduce((a,b)=>a+b,0)/vs.length; }
-  function getGrade(p){ if(p===null) return{label:'',cls:''}; if(p<=20) return{label:'Normal hearing',cls:'grade-normal'}; if(p<=40) return{label:'Mild loss',cls:'grade-mild'}; if(p<=70) return{label:'Moderate loss',cls:'grade-moderate'}; if(p<=90) return{label:'Severe loss',cls:'grade-severe'}; return{label:'Profound loss',cls:'grade-profound'}; }
-  function gradeColor(p){ if(p===null) return'#555'; if(p<=20) return'#1a7a4a'; if(p<=40) return'#5a8a00'; if(p<=70) return'#b86000'; if(p<=90) return'#c0380a'; return'#8b0000'; }
-  function gradeLabel(p){ if(p===null) return'N/A'; if(p<=20) return'Normal Hearing (0-20 dB)'; if(p<=40) return'Mild Loss (21-40 dB)'; if(p<=70) return'Moderate Loss (41-70 dB)'; if(p<=90) return'Severe Loss (71-90 dB)'; return'Profound Loss (91+ dB)'; }
+// ── Highlight PTA cells ───────────────────────────────────────
+function updateHighlights() {
+  const active = formula===3?PTA3:PTA4;
+  const ltSrc = document.getElementById('pta-src-lt').value;
+  const rtSrc = document.getElementById('pta-src-rt').value;
+  ROWS.forEach(row => FREQS.forEach(f => {
+    const el = document.getElementById(`${row.id}_${f}`);
+    if (!el) return;
+    const isLTPTA = row.id === ltSrc && active.includes(f);
+    const isRTPTA = row.id === rtSrc && active.includes(f);
+    el.className = (isLTPTA || isRTPTA) ? 'highlight' : '';
+  }));
+}
 
-  function recalc(){
-    const lt=calcPTA('L'),rt=calcPTA('R');
-    const ltG=getGrade(lt),rtG=getGrade(rt);
-    document.getElementById('lt-display').textContent=lt!==null?lt.toFixed(2):'—';
-    document.getElementById('rt-display').textContent=rt!==null?rt.toFixed(2):'—';
-    document.getElementById('lt-grade').textContent=ltG.label; document.getElementById('lt-grade').className='pill-grade '+ltG.cls;
-    document.getElementById('rt-grade').textContent=rtG.label; document.getElementById('rt-grade').className='pill-grade '+rtG.cls;
-    drawBothCharts();
-  }
+// ── Helpers ───────────────────────────────────────────────────
+function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function numVal(id){ const v=parseFloat(val(id)); return isNaN(v)?null:v; }
+function isNR(rowId,f){ const el=document.getElementById(`NR_${rowId}_${f}`); return el?el.checked:false; }
 
-  // Canvas chart
-  const CW=380,CH=340,CPL=46,CPR=18,CPT=28,CPB=46,CPW=CW-CPL-CPR,CPH=CH-CPT-CPB;
-  function cx(i){ return CPL+(i/(freqs.length-1))*CPW; }
-  function cy(db){ return CPT+((db-DB_MIN)/(DB_MAX-DB_MIN))*CPH; }
+function calcPTA(srcRow) {
+  const active = formula===3?PTA3:PTA4;
+  const vals = active.map(f => isNR(srcRow,f)?null:numVal(`${srcRow}_${f}`)).filter(v=>v!==null);
+  if (!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
 
-  function drawChart(id,acR,bcR,color,acS,bcS){
-    const ctx=document.getElementById(id).getContext('2d');
-    ctx.clearRect(0,0,CW,CH); ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
-    const dbs=[-10,0,10,20,30,40,50,60,70,80,90,100,110,120];
-    dbs.forEach(db=>{ const y=cy(db); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(CPL,y); ctx.lineTo(CW-CPR,y); ctx.stroke(); ctx.font='10px Arial'; ctx.fillStyle='#888'; ctx.textAlign='right'; ctx.fillText(db,CPL-6,y+3.5); });
-    freqs.forEach((f,i)=>{ const x=cx(i); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(x,CPT); ctx.lineTo(x,CH-CPB); ctx.stroke(); ctx.fillStyle='#888'; ctx.textAlign='center'; ctx.font='10px Arial'; const lbl=f==='1k'?'1000':f==='2k'?'2000':f==='4k'?'4000':f==='6k'?'6000':f==='8k'?'8000':f; ctx.fillText(lbl,x,CH-CPB+14); });
-    ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.strokeRect(CPL,CPT,CPW,CPH);
-    ctx.save(); ctx.translate(11,CPT+CPH/2); ctx.rotate(-Math.PI/2); ctx.font='10px Arial'; ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.fillText('Hearing Level (dB)',0,0); ctx.restore();
-    ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.font='10px Arial'; ctx.fillText('Frequency (Hz)',CPL+CPW/2,CH-6);
-    ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(CPL,cy(0)); ctx.lineTo(CW-CPR,cy(0)); ctx.stroke();
-    ctx.fillStyle='rgba(200,240,210,0.18)'; ctx.fillRect(CPL,cy(0),CPW,cy(20)-cy(0));
-    function pts(p){ return freqs.map((f,i)=>{ const v=numVal(`${p}_${f}`); return v!==null?{x:cx(i),y:cy(v)}:null; }); }
-    function line(pts,dash){ ctx.strokeStyle=color; ctx.lineWidth=1.8; ctx.setLineDash(dash||[]); let p=null; pts.forEach(pt=>{ if(pt&&p){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();} p=pt||null; }); ctx.setLineDash([]); }
-    function sym(x,y,s,r){ ctx.strokeStyle=color; ctx.lineWidth=1.8;
-      if(s==='O'){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();ctx.stroke();}
-      else if(s==='X'){ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.stroke();ctx.beginPath();ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.stroke();}
-      else if(s==='<'){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y);ctx.lineTo(x+r,y+r);ctx.closePath();ctx.fill();}
-      else if(s==='>'){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y);ctx.lineTo(x-r,y+r);ctx.closePath();ctx.fill();}
-    }
-    const ap=pts(acR),bp=pts(bcR);
-    line(ap); ap.forEach(p=>{ if(p) sym(p.x,p.y,acS,7); });
-    line(bp,[4,3]); bp.forEach(p=>{ if(p) sym(p.x,p.y,bcS,7); });
-    const lx=CPL+4,ly=CPT+10; sym(lx,ly,acS,5); ctx.font='9px Arial'; ctx.fillStyle=color; ctx.textAlign='left'; ctx.fillText('AC',lx+9,ly+3);
-    sym(lx+32,ly,bcS,5); ctx.fillText('BC',lx+41,ly+3);
-  }
-  function drawBothCharts(){ drawChart('chartRight','ACR','BCR','#c0392b','O','<'); drawChart('chartLeft','ACL','BCL','#1a5fb5','X','>'); }
+function getGrade(p){ if(p===null)return{label:'',cls:''}; if(p<=20)return{label:'Normal hearing',cls:'grade-normal'}; if(p<=40)return{label:'Mild loss',cls:'grade-mild'}; if(p<=70)return{label:'Moderate loss',cls:'grade-moderate'}; if(p<=90)return{label:'Severe loss',cls:'grade-severe'}; return{label:'Profound loss',cls:'grade-profound'}; }
+function gradeColor(p){ if(p===null)return'#555'; if(p<=20)return'#1a7a4a'; if(p<=40)return'#5a8a00'; if(p<=70)return'#b86000'; if(p<=90)return'#c0380a'; return'#8b0000'; }
+function gradeLabel(p){ if(p===null)return'N/A'; if(p<=20)return'Normal Hearing (0-20 dB)'; if(p<=40)return'Mild Loss (21-40 dB)'; if(p<=70)return'Moderate Loss (41-70 dB)'; if(p<=90)return'Severe Loss (71-90 dB)'; return'Profound Loss (91+ dB)'; }
 
-  // SVG builder for output
-  const SW=320,SH=280,SL=40,SR=12,ST=20,SB=38,SPW=SW-SL-SR,SPH=SH-ST-SB;
-  function sx(i){ return SL+(i/(freqs.length-1))*SPW; }
-  function sy(db){ return ST+((db-DB_MIN)/(DB_MAX-DB_MIN))*SPH; }
-
-  function buildSVG(acR,bcR,col,acS,bcS,title){
-    const dbs=[-10,0,10,20,30,40,50,60,70,80,90,100,110,120];
-    let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${SW}" height="${SH}" style="background:#fff;font-family:Arial,sans-serif;">`;
-    s+=`<rect x="${SL}" y="${sy(0)}" width="${SPW}" height="${sy(20)-sy(0)}" fill="#d4f0de" opacity="0.35"/>`;
-    dbs.forEach(db=>{ const y=sy(db); s+=`<line x1="${SL}" y1="${y}" x2="${SW-SR}" y2="${y}" stroke="#e0e0e0" stroke-width="0.5"/><text x="${SL-4}" y="${y+3.5}" text-anchor="end" font-size="7.5" fill="#999">${db}</text>`; });
-    freqs.forEach((f,i)=>{ const x=sx(i); s+=`<line x1="${x}" y1="${ST}" x2="${x}" y2="${SH-SB}" stroke="#e0e0e0" stroke-width="0.5"/>`; const lbl=f.replace('k','k'); s+=`<text x="${x}" y="${SH-SB+10}" text-anchor="middle" font-size="7.5" fill="#999">${lbl}</text>`; });
-    s+=`<rect x="${SL}" y="${ST}" width="${SPW}" height="${SPH}" fill="none" stroke="#ccc" stroke-width="1"/>`;
-    s+=`<line x1="${SL}" y1="${sy(0)}" x2="${SW-SR}" y2="${sy(0)}" stroke="#bbb" stroke-width="1"/>`;
-    s+=`<text x="${SL+SPW/2}" y="13" text-anchor="middle" font-size="8.5" font-weight="bold" fill="${col}">${title}</text>`;
-    s+=`<text transform="translate(8,${ST+SPH/2}) rotate(-90)" text-anchor="middle" font-size="7" fill="#888">Hearing Level (dB)</text>`;
-    s+=`<text x="${SL+SPW/2}" y="${SH-2}" text-anchor="middle" font-size="7.5" fill="#888">Frequency (Hz)</text>`;
-    function gpts(p){ return freqs.map((f,i)=>{ const v=numVal(`${p}_${f}`); return v!==null?{x:sx(i),y:sy(v)}:null; }); }
-    function svgLine(pts,dash){ let seg=[],segs=[]; pts.forEach(p=>{ if(p) seg.push(p); else{ if(seg.length>1) segs.push(seg); seg=[]; } }); if(seg.length>1) segs.push(seg); segs.forEach(seg=>{ const d='M'+seg.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L'); s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.5"${dash?' stroke-dasharray="4,3"':''}/>`; }); }
-    function svgSym(p,sym){ const r=4.5;
-      if(sym==='O') s+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
-      else if(sym==='X'){ s+=`<line x1="${(p.x-r).toFixed(1)}" y1="${(p.y-r).toFixed(1)}" x2="${(p.x+r).toFixed(1)}" y2="${(p.y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/><line x1="${(p.x+r).toFixed(1)}" y1="${(p.y-r).toFixed(1)}" x2="${(p.x-r).toFixed(1)}" y2="${(p.y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/>`; }
-      else if(sym==='<') s+=`<polygon points="${(p.x+r).toFixed(1)},${(p.y-r).toFixed(1)} ${(p.x-r).toFixed(1)},${p.y.toFixed(1)} ${(p.x+r).toFixed(1)},${(p.y+r).toFixed(1)}" fill="${col}"/>`;
-      else if(sym==='>') s+=`<polygon points="${(p.x-r).toFixed(1)},${(p.y-r).toFixed(1)} ${(p.x+r).toFixed(1)},${p.y.toFixed(1)} ${(p.x-r).toFixed(1)},${(p.y+r).toFixed(1)}" fill="${col}"/>`;
-    }
-    const ap=gpts(acR),bp=gpts(bcR);
-    svgLine(ap,false); ap.forEach(p=>{ if(p) svgSym(p,acS); });
-    svgLine(bp,true);  bp.forEach(p=>{ if(p) svgSym(p,bcS); });
-    const lx=SL+2,ly=ST+9;
-    if(acS==='O') s+=`<circle cx="${lx}" cy="${ly}" r="4" fill="white" stroke="${col}" stroke-width="1.5"/>`;
-    else{ s+=`<line x1="${lx-4}" y1="${ly-4}" x2="${lx+4}" y2="${ly+4}" stroke="${col}" stroke-width="1.8"/><line x1="${lx+4}" y1="${ly-4}" x2="${lx-4}" y2="${ly+4}" stroke="${col}" stroke-width="1.8"/>`; }
-    s+=`<text x="${lx+8}" y="${ly+3}" font-size="7.5" fill="${col}">AC</text>`;
-    if(bcS==='<') s+=`<polygon points="${lx+30+4},${ly-4} ${lx+30-4},${ly} ${lx+30+4},${ly+4}" fill="${col}"/>`;
-    else s+=`<polygon points="${lx+30-4},${ly-4} ${lx+30+4},${ly} ${lx+30-4},${ly+4}" fill="${col}"/>`;
-    s+=`<text x="${lx+38}" y="${ly+3}" font-size="7.5" fill="${col}">BC</text>`;
-    s+=`</svg>`;
-    return s;
-  }
-
-  function generate(){
-    const lt=calcPTA('L'),rt=calcPTA('R');
-    const ltStr=lt!==null?lt.toFixed(2):'___', rtStr=rt!==null?rt.toFixed(2):'___';
-    const ltColor=gradeColor(lt),rtColor=gradeColor(rt);
-    const ltLabel=gradeLabel(lt),rtLabel=gradeLabel(rt);
-    const fNote=formula===3?'3-freq: 500+1k+2k':'4-freq: 500+1k+2k+4k';
-
-    // 1. PTA
-    const ptaHTML=`<b>PTA: LT - ${ltStr}&nbsp;&nbsp;RT - ${rtStr}</b>`;
-
-    // 2. Table
-    const fh=freqs.map(f=>`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;"><b>${f}</b></td>`).join('');
-    let rh='';
-    rows.forEach((row,i)=>{ const bg=i%2!==0?'background:#f9f9f9;':''; let c=`<td style="border:1px solid #ccc;padding:2px 4px;"><b>${row}</b></td>`; freqs.forEach(f=>{ const v=val(`${row}_${f}`)||'___'; c+=`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;">${v}</td>`; }); rh+=`<tr style="${bg}">${c}</tr>`; });
-    const tableHTML=`<table style="border-collapse:collapse;font-size:10px;width:100%;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 4px;width:8%;"></td>${fh}</tr>${rh}</table>`;
-
-    // 3. Classification
-    const classHTML=`<div style="font-size:10px;margin-top:4px;"><span style="color:${rtColor};font-weight:bold;">RT: ${rtStr} dB - ${rtLabel}</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span style="color:${ltColor};font-weight:bold;">LT: ${ltStr} dB - ${ltLabel}</span>&nbsp;&nbsp;<span style="color:#aaa;font-size:9px;">(${fNote})</span></div>`;
-
-    // 4. Charts
-    const svgR=buildSVG('ACR','BCR','#c0392b','O','<','Right Ear');
-    const svgL=buildSVG('ACL','BCL','#1a5fb5','X','>','Left Ear');
-    const chartHTML=`<table style="border-collapse:collapse;width:100%;margin-top:6px;"><tr><td style="vertical-align:top;padding-right:4px;">${svgR}</td><td style="vertical-align:top;">${svgL}</td></tr></table>`;
-
-    // Combined single HTML
-    const combined=`<div style="line-height:1.4;margin:0;padding:0;font-size:10px;">${ptaHTML}${tableHTML}${classHTML}${chartHTML}</div>`;
-
-    document.getElementById('out1').textContent=combined;
-    document.getElementById('prev1').innerHTML=combined;
-    document.getElementById('outputs-wrapper').style.display='block';
-    document.getElementById('copy1').textContent='Copy HTML';
-    document.getElementById('copy1').className='btn-copy';
-  }
-
-  function copyBlock(boxId,btnId){
-    const text=document.getElementById(boxId).textContent;
-    navigator.clipboard.writeText(text).then(()=>{
-      const btn=document.getElementById(btnId);
-      btn.textContent='Copied!'; btn.className='btn-copy done';
-      setTimeout(()=>{ btn.textContent='Copy HTML'; btn.className='btn-copy'; },2500);
-    });
-  }
-
-  function clearAll(){
-    rows.forEach(r=>freqs.forEach(f=>{ const el=document.getElementById(`${r}_${f}`); if(el) el.value=''; }));
-    document.getElementById('outputs-wrapper').style.display='none';
-    recalc(); updateHighlights();
-  }
-
+function recalc(){
+  const ltSrc = document.getElementById('pta-src-lt').value;
+  const rtSrc = document.getElementById('pta-src-rt').value;
+  const lt=calcPTA(ltSrc), rt=calcPTA(rtSrc);
+  const ltG=getGrade(lt), rtG=getGrade(rt);
+  document.getElementById('lt-display').textContent=lt!==null?lt.toFixed(2):'—';
+  document.getElementById('rt-display').textContent=rt!==null?rt.toFixed(2):'—';
+  document.getElementById('lt-grade').textContent=ltG.label; document.getElementById('lt-grade').className='pill-grade '+ltG.cls;
+  document.getElementById('rt-grade').textContent=rtG.label; document.getElementById('rt-grade').className='pill-grade '+rtG.cls;
   updateHighlights();
   drawBothCharts();
+}
+
+function setFormula(n){ formula=n; document.getElementById('f3btn').className='formula-btn'+(n===3?' active':''); document.getElementById('f4btn').className='formula-btn'+(n===4?' active':''); recalc(); }
+
+// ── Canvas Chart ──────────────────────────────────────────────
+const CW=400,CH_H=360,CPL=48,CPR=18,CPT=30,CPB=50,CPW=CW-CPL-CPR,CPH=CH_H-CPT-CPB;
+function cx(i){ return CPL+(i/(FREQS.length-1))*CPW; }
+function cy(db){ return CPT+((db-DB_MIN)/(DB_MAX-DB_MIN))*CPH; }
+
+// Draw symbol on canvas
+function canvasSym(ctx,x,y,type,masked,nr,color,r){
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2;
+  if(nr){
+    // draw base symbol then arrow
+    canvasSymBase(ctx,x,y,type,masked,color,r);
+    // downward-right arrow
+    ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    const ax=x+r+2, ay=y+r+2, ex=ax+10, ey=ay+10;
+    ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ex,ey); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-5,ey-1); ctx.lineTo(ex-1,ey-5); ctx.closePath(); ctx.fill();
+    return;
+  }
+  canvasSymBase(ctx,x,y,type,masked,color,r);
+}
+
+function canvasSymBase(ctx,x,y,type,masked,color,r){
+  ctx.strokeStyle=color; ctx.lineWidth=1.8;
+  if(type==='ac'&&!masked){
+    // O (right) or X (left) — determined by caller passing type
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
+  } else if(type==='ac_x'&&!masked){
+    ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke();
+  } else if(type==='ac'&&masked){
+    // triangle up (right) △
+    ctx.beginPath(); ctx.moveTo(x,y-r); ctx.lineTo(x+r,y+r); ctx.lineTo(x-r,y+r); ctx.closePath(); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
+  } else if(type==='ac_x'&&masked){
+    // triangle down (left) ▽
+    ctx.beginPath(); ctx.moveTo(x,y+r); ctx.lineTo(x+r,y-r); ctx.lineTo(x-r,y-r); ctx.closePath(); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
+  } else if(type==='bc'&&!masked){
+    // < (right) filled chevron
+    ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y); ctx.lineTo(x+r,y+r); ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+  } else if(type==='bc_x'&&!masked){
+    // > (left) filled chevron
+    ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y); ctx.lineTo(x-r,y+r); ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+  } else if(type==='bc'&&masked){
+    // [ bracket (right)
+    ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y-r); ctx.lineTo(x-r,y+r); ctx.lineTo(x+r,y+r); ctx.fillStyle='transparent'; ctx.stroke();
+  } else if(type==='bc_x'&&masked){
+    // ] bracket (left)
+    ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y-r); ctx.lineTo(x+r,y+r); ctx.lineTo(x-r,y+r); ctx.fillStyle='transparent'; ctx.stroke();
+  }
+}
+
+function drawCanvasChart(canvasId, isRight){
+  const color = isRight?'#c0392b':'#1a5fb5';
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,CW,CH_H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH_H);
+
+  // grid
+  const dbs=[-10,0,10,20,30,40,50,60,70,80,90,100,110,120];
+  dbs.forEach(db=>{ const y=cy(db); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(CPL,y); ctx.lineTo(CW-CPR,y); ctx.stroke(); ctx.font='10px Arial'; ctx.fillStyle='#888'; ctx.textAlign='right'; ctx.fillText(db,CPL-6,y+3.5); });
+  FREQS.forEach((f,i)=>{ const x=cx(i); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(x,CPT); ctx.lineTo(x,CH_H-CPB); ctx.stroke(); ctx.fillStyle='#888'; ctx.font='10px Arial'; ctx.textAlign='center'; const lbl=f==='1k'?'1000':f==='2k'?'2000':f==='4k'?'4000':f==='6k'?'6000':f==='8k'?'8000':f; ctx.fillText(lbl,x,CH_H-CPB+14); });
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.strokeRect(CPL,CPT,CPW,CPH);
+  ctx.save(); ctx.translate(12,CPT+CPH/2); ctx.rotate(-Math.PI/2); ctx.font='10px Arial'; ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.fillText('Hearing Level (dB)',0,0); ctx.restore();
+  ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.font='10px Arial'; ctx.fillText('Frequency (Hz)',CPL+CPW/2,CH_H-8);
+  ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(CPL,cy(0)); ctx.lineTo(CW-CPR,cy(0)); ctx.stroke();
+  ctx.fillStyle='rgba(200,240,210,0.18)'; ctx.fillRect(CPL,cy(0),CPW,cy(20)-cy(0));
+
+  // Rows to draw for this ear
+  const earRows = ROWS.filter(r => r.ear===(isRight?'RE':'LE'));
+
+  earRows.forEach(rowDef => {
+    const symType = rowDef.type==='ac' ? (isRight?'ac':'ac_x') : (isRight?'bc':'bc_x');
+    const masked = rowDef.masked;
+    const lineDash = rowDef.type==='bc' ? [4,3] : [];
+
+    // collect points
+    const pts = FREQS.map((f,i)=>{
+      const nr = isNR(rowDef.id,f);
+      const v = numVal(`${rowDef.id}_${f}`);
+      if (v===null && !nr) return null;
+      const yv = nr ? cy(Math.min(DB_MAX, (v!==null?v:DB_MAX))) : cy(v);
+      return {x:cx(i), y:yv, nr, masked};
+    });
+
+    // draw connecting line (skip NR points for line)
+    ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.setLineDash(lineDash);
+    let prev=null;
+    pts.forEach(pt=>{
+      if(pt && !pt.nr && prev && !prev.nr){ ctx.beginPath(); ctx.moveTo(prev.x,prev.y); ctx.lineTo(pt.x,pt.y); ctx.stroke(); }
+      if(pt) prev=pt; else prev=null;
+    });
+    ctx.setLineDash([]);
+
+    // draw symbols
+    pts.forEach(pt=>{ if(pt) canvasSym(ctx,pt.x,pt.y,symType,masked,pt.nr,color,6); });
+  });
+
+  // Canvas legend (compact)
+  const items = isRight
+    ? [{sym:'ac',m:false,lbl:'AC'},{sym:'ac',m:true,lbl:'ACM'},{sym:'bc',m:false,lbl:'BC'},{sym:'bc',m:true,lbl:'BCM'}]
+    : [{sym:'ac_x',m:false,lbl:'AC'},{sym:'ac_x',m:true,lbl:'ACM'},{sym:'bc_x',m:false,lbl:'BC'},{sym:'bc_x',m:true,lbl:'BCM'}];
+  items.forEach((item,i)=>{
+    const lx=CPL+i*52+6, ly=CPT+12;
+    canvasSymBase(ctx,lx,ly,item.sym,item.m,color,5);
+    ctx.font='9px Arial'; ctx.fillStyle=color; ctx.textAlign='left'; ctx.fillText(item.lbl,lx+8,ly+3);
+  });
+}
+
+function drawBothCharts(){ drawCanvasChart('chartRight',true); drawCanvasChart('chartLeft',false); }
+
+// ── SVG builder ───────────────────────────────────────────────
+const SW=330,SH=290,SL=42,SR=12,ST=22,SB=40,SPW=SW-SL-SR,SPH=SH-ST-SB;
+function sx(i){ return SL+(i/(FREQS.length-1))*SPW; }
+function sy(db){ return ST+((db-DB_MIN)/(DB_MAX-DB_MIN))*SPH; }
+
+function svgSymbol(x,y,type,masked,nr,col){
+  const r=4.5; let s='';
+  if(nr){
+    s+=svgSymBase(x,y,type,masked,col,r);
+    const ax=x+r+1,ay=y+r+1,ex=ax+9,ey=ay+9;
+    s+=`<line x1="${ax.toFixed(1)}" y1="${ay.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${col}" stroke-width="1.5"/>`;
+    s+=`<polygon points="${ex.toFixed(1)},${ey.toFixed(1)} ${(ex-4).toFixed(1)},${(ey-1).toFixed(1)} ${(ex-1).toFixed(1)},${(ey-4).toFixed(1)}" fill="${col}"/>`;
+    return s;
+  }
+  return svgSymBase(x,y,type,masked,col,r);
+}
+
+function svgSymBase(x,y,type,masked,col,r){
+  const xf=x.toFixed(1),yf=y.toFixed(1);
+  if(type==='ac'&&!masked)
+    return `<circle cx="${xf}" cy="${yf}" r="${r}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='ac_x'&&!masked)
+    return `<line x1="${(x-r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x+r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/><line x1="${(x+r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x-r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/>`;
+  if(type==='ac'&&masked)
+    return `<polygon points="${xf},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='ac_x'&&masked)
+    return `<polygon points="${xf},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='bc'&&!masked)
+    return `<polygon points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${yf} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
+  if(type==='bc_x'&&!masked)
+    return `<polygon points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${yf} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
+  if(type==='bc'&&masked)
+    return `<polyline points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
+  if(type==='bc_x'&&masked)
+    return `<polyline points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
+  return '';
+}
+
+function buildSVGChart(isRight){
+  const col=isRight?'#c0392b':'#1a5fb5';
+  const title=isRight?'Right Ear':'Left Ear';
+  const dbs=[-10,0,10,20,30,40,50,60,70,80,90,100,110,120];
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${SW}" height="${SH}" style="background:#fff;font-family:Arial,sans-serif;">`;
+  s+=`<rect x="${SL}" y="${sy(0)}" width="${SPW}" height="${sy(20)-sy(0)}" fill="#d4f0de" opacity="0.35"/>`;
+  dbs.forEach(db=>{ const y=sy(db); s+=`<line x1="${SL}" y1="${y.toFixed(1)}" x2="${SW-SR}" y2="${y.toFixed(1)}" stroke="#e0e0e0" stroke-width="0.5"/><text x="${SL-4}" y="${(y+3.5).toFixed(1)}" text-anchor="end" font-size="7.5" fill="#999">${db}</text>`; });
+  FREQS.forEach((f,i)=>{ const x=sx(i); s+=`<line x1="${x.toFixed(1)}" y1="${ST}" x2="${x.toFixed(1)}" y2="${SH-SB}" stroke="#e0e0e0" stroke-width="0.5"/><text x="${x.toFixed(1)}" y="${SH-SB+11}" text-anchor="middle" font-size="7.5" fill="#999">${f}</text>`; });
+  s+=`<rect x="${SL}" y="${ST}" width="${SPW}" height="${SPH}" fill="none" stroke="#ccc" stroke-width="1"/>`;
+  s+=`<line x1="${SL}" y1="${sy(0).toFixed(1)}" x2="${SW-SR}" y2="${sy(0).toFixed(1)}" stroke="#bbb" stroke-width="1"/>`;
+  s+=`<text x="${(SL+SPW/2).toFixed(1)}" y="14" text-anchor="middle" font-size="8.5" font-weight="bold" fill="${col}">${title}</text>`;
+  s+=`<text transform="translate(9,${(ST+SPH/2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="7" fill="#888">Hearing Level (dB)</text>`;
+  s+=`<text x="${(SL+SPW/2).toFixed(1)}" y="${SH-3}" text-anchor="middle" font-size="7.5" fill="#888">Frequency (Hz)</text>`;
+
+  const earRows = ROWS.filter(r=>r.ear===(isRight?'RE':'LE'));
+  earRows.forEach(rowDef=>{
+    const symType=rowDef.type==='ac'?(isRight?'ac':'ac_x'):(isRight?'bc':'bc_x');
+    const masked=rowDef.masked;
+    const dash=rowDef.type==='bc'?' stroke-dasharray="4,3"':'';
+    const pts=FREQS.map((f,i)=>{
+      const nr=isNR(rowDef.id,f);
+      const v=numVal(`${rowDef.id}_${f}`);
+      if(v===null&&!nr) return null;
+      const yv=nr?sy(Math.min(DB_MAX,v!==null?v:DB_MAX)):sy(v);
+      return {x:sx(i),y:yv,nr};
+    });
+    // lines
+    let seg=[]; const segs=[];
+    pts.forEach(p=>{ if(p&&!p.nr) seg.push(p); else{ if(seg.length>1) segs.push(seg); seg=[]; } });
+    if(seg.length>1) segs.push(seg);
+    segs.forEach(seg=>{ const d='M'+seg.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L'); s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.4"${dash}/>`; });
+    // symbols
+    pts.forEach(p=>{ if(p) s+=svgSymbol(p.x,p.y,symType,masked,p.nr,col); });
+  });
+
+  // Legend
+  const litems=isRight
+    ?[{t:'ac',m:false,l:'AC'},{t:'ac',m:true,l:'ACM'},{t:'bc',m:false,l:'BC'},{t:'bc',m:true,l:'BCM'}]
+    :[{t:'ac_x',m:false,l:'AC'},{t:'ac_x',m:true,l:'ACM'},{t:'bc_x',m:false,l:'BC'},{t:'bc_x',m:true,l:'BCM'}];
+  litems.forEach((item,i)=>{
+    const lx=SL+i*58+5, ly=ST+11;
+    s+=svgSymBase(lx,ly,item.t,item.m,col,4);
+    s+=`<text x="${lx+7}" y="${ly+3}" font-size="7.5" fill="${col}">${item.l}</text>`;
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+// ── Generate output ───────────────────────────────────────────
+function generate(){
+  const ltSrc=document.getElementById('pta-src-lt').value;
+  const rtSrc=document.getElementById('pta-src-rt').value;
+  const lt=calcPTA(ltSrc), rt=calcPTA(rtSrc);
+  const ltStr=lt!==null?lt.toFixed(2):'___', rtStr=rt!==null?rt.toFixed(2):'___';
+  const ltColor=gradeColor(lt), rtColor=gradeColor(rt);
+  const ltLabel=gradeLabel(lt), rtLabel=gradeLabel(rt);
+  const fNote=formula===3?'3-freq: 500+1k+2k':'4-freq: 500+1k+2k+4k';
+
+  // PTA line
+  const ptaHTML=`<b>PTA: LT - ${ltStr}&nbsp;&nbsp;RT - ${rtStr}</b>`;
+
+  // Table — show all rows that have at least one value
+  const activeRows = ROWS.filter(row=> FREQS.some(f=> numVal(`${row.id}_${f}`)!==null || isNR(row.id,f)));
+  let tableHTML='';
+  if(activeRows.length>0){
+    const fh=FREQS.map(f=>`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;"><b>${f}</b></td>`).join('');
+    let rh='';
+    activeRows.forEach((row,i)=>{
+      const bg=i%2!==0?'background:#f9f9f9;':'';
+      const earColor=row.ear==='RE'?'color:#c0392b;':'color:#1a5fb5;';
+      let cells=`<td style="border:1px solid #ccc;padding:2px 4px;font-weight:bold;${earColor}">${row.ear} ${row.label}</td>`;
+      FREQS.forEach(f=>{
+        const nr=isNR(row.id,f);
+        const v=val(`${row.id}_${f}`);
+        const display=nr?`${v||''}NR`:(v||'___');
+        cells+=`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;${nr?'color:#c0392b;font-style:italic;':''}">${display}</td>`;
+      });
+      rh+=`<tr style="${bg}">${cells}</tr>`;
+    });
+    tableHTML=`<table style="border-collapse:collapse;font-size:10px;width:100%;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 4px;width:12%;"><b>Row</b></td>${fh}</tr>${rh}</table>`;
+  }
+
+  // Classification
+  const classHTML=`<div style="font-size:10px;margin-top:4px;"><span style="color:${rtColor};font-weight:bold;">RT: ${rtStr} dB - ${rtLabel}</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span style="color:${ltColor};font-weight:bold;">LT: ${ltStr} dB - ${ltLabel}</span>&nbsp;&nbsp;<span style="color:#aaa;font-size:9px;">(${fNote})</span></div>`;
+
+  // Charts
+  const svgR=buildSVGChart(true), svgL=buildSVGChart(false);
+  const chartHTML=`<table style="border-collapse:collapse;width:100%;margin-top:6px;"><tr><td style="vertical-align:top;padding-right:4px;">${svgR}</td><td style="vertical-align:top;">${svgL}</td></tr></table>`;
+
+  const combined=`<div style="line-height:1.4;margin:0;padding:0;font-size:10px;">${ptaHTML}${tableHTML}${classHTML}${chartHTML}</div>`;
+
+  document.getElementById('out1').textContent=combined;
+  document.getElementById('prev1').innerHTML=combined;
+  document.getElementById('outputs-wrapper').style.display='block';
+  document.getElementById('copy1').textContent='Copy HTML';
+  document.getElementById('copy1').className='btn-copy';
+}
+
+function copyBlock(boxId,btnId){
+  const text=document.getElementById(boxId).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(btnId);
+    btn.textContent='Copied!'; btn.className='btn-copy done';
+    setTimeout(()=>{ btn.textContent='Copy HTML'; btn.className='btn-copy'; },2500);
+  });
+}
+
+function clearAll(){
+  ROWS.forEach(row=>FREQS.forEach(f=>{
+    const el=document.getElementById(`${row.id}_${f}`); if(el) el.value='';
+    const nr=document.getElementById(`NR_${row.id}_${f}`); if(nr) nr.checked=false;
+  }));
+  document.getElementById('outputs-wrapper').style.display='none';
+  recalc();
+}
+
+// Init
+recalc();
 </script>
 </body>
 </html>
