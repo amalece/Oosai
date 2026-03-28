@@ -395,12 +395,17 @@ function drawCanvasChart(canvasId, isRight){
       return {x:cx(i), y:yv, nr, masked};
     });
 
-    // draw connecting line (skip NR points for line)
+    // draw connecting line — skip blank freqs but keep line connected; only NR breaks the line
     ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.setLineDash(lineDash);
     let prev=null;
     pts.forEach(pt=>{
-      if(pt && !pt.nr && prev && !prev.nr){ ctx.beginPath(); ctx.moveTo(prev.x,prev.y); ctx.lineTo(pt.x,pt.y); ctx.stroke(); }
-      if(pt) prev=pt; else prev=null;
+      if(pt && !pt.nr){
+        if(prev && !prev.nr){ ctx.beginPath(); ctx.moveTo(prev.x,prev.y); ctx.lineTo(pt.x,pt.y); ctx.stroke(); }
+        prev=pt;
+      } else if(pt && pt.nr){
+        prev=null; // NR breaks the line
+      }
+      // null (blank) = do nothing, prev stays, line will connect to next valid point
     });
     ctx.setLineDash([]);
 
@@ -486,8 +491,13 @@ function buildSVGChart(isRight){
       return {x:sx(i),y:yv,nr};
     });
     // lines
+    // Build path segments — blank freqs are skipped (line continues), NR breaks the line
     let seg=[]; const segs=[];
-    pts.forEach(p=>{ if(p&&!p.nr) seg.push(p); else{ if(seg.length>1) segs.push(seg); seg=[]; } });
+    pts.forEach(p=>{
+      if(p&&!p.nr) seg.push(p);
+      else if(p&&p.nr){ if(seg.length>1) segs.push(seg); seg=[]; }
+      // null (blank) = skip, seg continues to next valid point
+    });
     if(seg.length>1) segs.push(seg);
     segs.forEach(seg=>{ const d='M'+seg.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L'); s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.4"${dash}/>`; });
     // symbols
