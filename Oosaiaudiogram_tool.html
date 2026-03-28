@@ -8,7 +8,7 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'DM Sans',sans-serif;background:#f0f4f8;min-height:100vh;padding:30px 16px;}
-    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);max-width:1060px;margin:0 auto;padding:36px;}
+    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);max-width:1100px;margin:0 auto;padding:36px;}
     .header{display:flex;align-items:center;gap:16px;margin-bottom:32px;border-bottom:1.5px solid #eef1f6;padding-bottom:22px;}
     .logo-circle{width:48px;height:48px;border-radius:50%;background:#004aad;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
     .header h1{font-size:18px;color:#111;font-weight:700;}
@@ -23,13 +23,9 @@
     .pta-pill .pill-value{font-size:22px;font-weight:700;color:#004aad;font-family:'DM Mono',monospace;}
     .pta-pill .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
     .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
-
-    /* PTA source selector */
     .pta-source{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
     .pta-source label{font-size:12px;color:#666;font-weight:600;}
     .pta-source select{padding:6px 10px;font-size:12px;border:1.5px solid #e0e5ef;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
-
-    /* Grid */
     .grid-scroll{overflow-x:auto;margin-bottom:28px;}
     table.grid{width:100%;border-collapse:collapse;font-size:12px;min-width:700px;}
     table.grid th{background:#004aad;color:#fff;padding:8px 5px;text-align:center;font-size:11px;font-weight:600;}
@@ -40,7 +36,6 @@
     table.grid td.row-label.le{background:#f0f4ff;color:#1a5fb5;}
     table.grid tr:nth-child(even) td:not(.row-label){background:#fafbfd;}
     table.grid tr:nth-child(odd) td:not(.row-label){background:#fff;}
-    /* cell wrapper */
     .cell-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
     table.grid input[type=text]{width:46px;border:1.5px solid #e0e5ef;border-radius:5px;padding:4px 3px;text-align:center;font-size:12px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border 0.2s,background 0.2s;background:transparent;}
     table.grid input[type=text]:focus{border-color:#004aad;background:#eef3ff;}
@@ -48,19 +43,36 @@
     .nr-wrap{display:flex;align-items:center;gap:3px;font-size:9px;color:#aaa;}
     .nr-wrap input[type=checkbox]{width:12px;height:12px;cursor:pointer;accent-color:#c0392b;}
     .hint{display:block;font-size:8px;color:#ddd;margin-top:1px;font-family:'DM Mono',monospace;}
-
-    /* section dividers in grid */
     .group-header td{background:#e8ecf3!important;font-size:10px;font-weight:700;color:#666;padding:4px 10px;text-align:left;letter-spacing:0.5px;}
-
     .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
     button{padding:10px 22px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:600;border:none;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
     .btn-primary{background:#004aad;color:#fff;}.btn-primary:hover{background:#003a8c;}
     .btn-clear{background:#f0f2f5;color:#555;}.btn-clear:hover{background:#e4e7ed;}
 
+    /* ── Draw Mode Panel ── */
+    .draw-panel{background:#f7f9ff;border:1.5px solid #c5d3f5;border-radius:14px;padding:18px 20px;margin-bottom:22px;}
+    .draw-panel-title{font-size:13px;font-weight:700;color:#004aad;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .draw-panel-title svg{flex-shrink:0;}
+    .draw-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+    .draw-mode-toggle{display:flex;gap:0;border:1.5px solid #c5d3f5;border-radius:8px;overflow:hidden;}
+    .draw-mode-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:#fff;color:#555;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+    .draw-mode-btn.active{background:#004aad;color:#fff;}
+    .row-selector{display:flex;flex-direction:column;gap:4px;}
+    .row-selector label{font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.5px;}
+    .row-selector select{padding:6px 10px;font-size:12px;border:1.5px solid #c5d3f5;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;background:#fff;}
+    .draw-tip{font-size:11px;color:#6680c4;background:#eef3ff;border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.6;}
+    .draw-active-indicator{display:inline-flex;align-items:center;gap:6px;background:#e6fff0;color:#1a7a4a;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid #a8dfc0;}
+    .draw-inactive-indicator{display:inline-flex;align-items:center;gap:6px;background:#f0f2f5;color:#888;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid #dde0e8;}
+    .indicator-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
     /* chart */
     .chart-wrapper{margin-bottom:28px;border:1.5px solid #e4e8f0;border-radius:12px;overflow:hidden;}
-    .chart-header{background:#f7f9fc;padding:10px 16px;border-bottom:1px solid #e4e8f0;font-size:12px;font-weight:700;color:#444;}
+    .chart-header{background:#f7f9fc;padding:10px 16px;border-bottom:1px solid #e4e8f0;font-size:12px;font-weight:700;color:#444;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
     .chart-inner{padding:16px;background:#fff;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+    .chart-container{text-align:center;}
+    .canvas-wrap{position:relative;display:inline-block;}
+    .canvas-wrap canvas{display:block;}
+    .canvas-wrap.draw-mode-on canvas{cursor:crosshair;}
 
     /* legend */
     .legend-box{background:#f8f9fb;border:1px solid #e4e8f0;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;gap:24px;flex-wrap:wrap;}
@@ -95,11 +107,11 @@
     <div class="logo-circle">O</div>
     <div>
       <h1>Audiogram HTML Generator</h1>
-      <p>Oosai Hearingaid Centre — Notes Template Tool</p>
+      <p>Oosai Hearingaid Centre — Notes Template Tool · Draw Mode Enabled</p>
     </div>
   </div>
 
-  <div class="badge"><span class="badge-dot"></span>  compatible · Auto PTA · Full symbol set · Single HTML output</div>
+  <div class="badge"><span class="badge-dot"></span> Compatible · Auto PTA · Full symbol set · Draw on chart · Single HTML output</div>
 
   <!-- Symbol Legend -->
   <div class="section-label">Symbol Reference</div>
@@ -165,6 +177,44 @@
     </div>
   </div>
 
+  <!-- ══ DRAW MODE PANEL ══ -->
+  <div class="section-label">Draw Mode</div>
+  <div class="draw-panel">
+    <div class="draw-panel-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#004aad" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Interactive Chart Drawing
+    </div>
+    <div class="draw-controls">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Mode</div>
+        <div class="draw-mode-toggle">
+          <button class="draw-mode-btn active" id="btnModeType" onclick="setDrawMode('type')">✏️ Type Values</button>
+          <button class="draw-mode-btn" id="btnModeDraw" onclick="setDrawMode('draw')">🎯 Draw on Chart</button>
+        </div>
+      </div>
+      <div class="row-selector">
+        <label>Row to draw on</label>
+        <select id="drawRowSelect" onchange="updateDrawCursor()">
+          <option value="ACR">RE — AC Unmasked</option>
+          <option value="ACR_M">RE — AC Masked</option>
+          <option value="BCR">RE — BC Unmasked</option>
+          <option value="BCR_M">RE — BC Masked</option>
+          <option value="ACL">LE — AC Unmasked</option>
+          <option value="ACL_M">LE — AC Masked</option>
+          <option value="BCL">LE — BC Unmasked</option>
+          <option value="BCL_M">LE — BC Masked</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Status</div>
+        <div id="drawStatusIndicator" class="draw-inactive-indicator"><span class="indicator-dot"></span>Type mode active</div>
+      </div>
+    </div>
+    <div class="draw-tip" id="drawTip">
+      💡 Switch to <b>Draw on Chart</b> mode, select the row you want to fill, then <b>click or drag</b> on the audiogram chart to place values. The input fields update automatically.
+    </div>
+  </div>
+
   <!-- Grid -->
   <div class="section-label">Audiogram Values <span style="font-size:10px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:400;">— yellow = PTA frequencies · NR = No Response</span></div>
   <div class="grid-scroll">
@@ -181,15 +231,22 @@
 
   <!-- Live Chart -->
   <div class="chart-wrapper">
-    <div class="chart-header">Live Audiogram Chart <span style="font-size:11px;font-weight:400;color:#999;margin-left:10px;">Updates as you type · Right = red · Left = blue</span></div>
+    <div class="chart-header">
+      <span>Live Audiogram Chart <span style="font-size:11px;font-weight:400;color:#999;margin-left:10px;">Updates as you type · Right = red · Left = blue</span></span>
+      <span id="chartModeLabel" style="font-size:11px;color:#999;font-weight:400;">Click chart in Draw mode to place values</span>
+    </div>
     <div class="chart-inner">
-      <div style="text-align:center;">
+      <div class="chart-container">
         <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:6px;">RIGHT EAR</div>
-        <canvas id="chartRight" width="400" height="360"></canvas>
+        <div class="canvas-wrap" id="wrapRight">
+          <canvas id="chartRight" width="430" height="370"></canvas>
+        </div>
       </div>
-      <div style="text-align:center;">
+      <div class="chart-container">
         <div style="font-size:11px;font-weight:700;color:#1a5fb5;margin-bottom:6px;">LEFT EAR</div>
-        <canvas id="chartLeft" width="400" height="360"></canvas>
+        <div class="canvas-wrap" id="wrapLeft">
+          <canvas id="chartLeft" width="430" height="370"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -202,7 +259,7 @@
   <div class="outputs-wrapper" id="outputs-wrapper">
     <div class="output-block">
       <div class="output-block-header">
-        <div class="output-block-title"><span class="line-badge">Single HTML</span> Copy &amp; paste into one description field in </div>
+        <div class="output-block-title"><span class="line-badge">Single HTML</span> Copy &amp; paste into one description field</div>
         <button class="btn-copy" id="copy1" onclick="copyBlock('out1','copy1')">Copy HTML</button>
       </div>
       <div class="output-box" id="out1"></div>
@@ -217,14 +274,12 @@
   </div>
 
   <div class="tip">
-    <strong>How to use:</strong> Fill in values → tick <code>NR</code> if patient had no response → Click "Generate HTML Output" → Copy into  description.<br>
-    Yellow cells = PTA frequencies. Use the dropdowns above to switch PTA source between unmasked and masked AC.
+    <strong>How to use:</strong> Fill in values manually <em>or</em> switch to <code>Draw on Chart</code> mode and click/drag on the audiogram. Both methods update each other in real time. Tick <code>NR</code> for no-response. Click "Generate HTML Output" to produce the copyable result.
   </div>
 </div>
 
 <script>
 // ── Data model ────────────────────────────────────────────────
-// Rows: ACR, ACR_M, BCR, BCR_M, ACL, ACL_M, BCL, BCL_M
 const ROWS = [
   {id:'ACR',   label:'AC Unmasked', ear:'RE', type:'ac',  masked:false},
   {id:'ACR_M', label:'AC Masked',   ear:'RE', type:'ac',  masked:true},
@@ -238,7 +293,8 @@ const ROWS = [
 const FREQS = ['125','250','500','1k','2k','4k','6k','8k'];
 const PTA3 = ['500','1k','2k'], PTA4 = ['500','1k','2k','4k'];
 const DB_MIN=-10, DB_MAX=120;
-let formula=3;
+let formula = 3;
+let drawMode = 'type'; // 'type' | 'draw'
 
 // ── Build grid ────────────────────────────────────────────────
 const tbody = document.getElementById('grid-body');
@@ -313,18 +369,168 @@ function recalc(){
 
 function setFormula(n){ formula=n; document.getElementById('f3btn').className='formula-btn'+(n===3?' active':''); document.getElementById('f4btn').className='formula-btn'+(n===4?' active':''); recalc(); }
 
+// ── Draw Mode ─────────────────────────────────────────────────
+function setDrawMode(mode) {
+  drawMode = mode;
+  document.getElementById('btnModeType').className = 'draw-mode-btn' + (mode==='type'?' active':'');
+  document.getElementById('btnModeDraw').className = 'draw-mode-btn' + (mode==='draw'?' active':'');
+
+  const wrapR = document.getElementById('wrapRight');
+  const wrapL = document.getElementById('wrapLeft');
+  if (mode === 'draw') {
+    wrapR.classList.add('draw-mode-on');
+    wrapL.classList.add('draw-mode-on');
+    document.getElementById('drawStatusIndicator').className = 'draw-active-indicator';
+    document.getElementById('drawStatusIndicator').innerHTML = '<span class="indicator-dot"></span>Draw mode active';
+    document.getElementById('drawTip').innerHTML = '🎯 <b>Click or drag</b> on either chart to place a value for the selected row. The input fields update instantly. Switch rows using the dropdown above.';
+    document.getElementById('chartModeLabel').textContent = 'Draw mode ON — click/drag to place values';
+    document.getElementById('chartModeLabel').style.color = '#004aad';
+    document.getElementById('chartModeLabel').style.fontWeight = '600';
+  } else {
+    wrapR.classList.remove('draw-mode-on');
+    wrapL.classList.remove('draw-mode-on');
+    document.getElementById('drawStatusIndicator').className = 'draw-inactive-indicator';
+    document.getElementById('drawStatusIndicator').innerHTML = '<span class="indicator-dot"></span>Type mode active';
+    document.getElementById('drawTip').innerHTML = '💡 Switch to <b>Draw on Chart</b> mode, select the row you want to fill, then <b>click or drag</b> on the audiogram chart to place values. The input fields update automatically.';
+    document.getElementById('chartModeLabel').textContent = 'Click chart in Draw mode to place values';
+    document.getElementById('chartModeLabel').style.color = '#999';
+    document.getElementById('chartModeLabel').style.fontWeight = '400';
+  }
+  updateDrawCursor();
+}
+
+function updateDrawCursor() {
+  // just triggers a redraw so the hover indicator is right
+  drawBothCharts();
+}
+
 // ── Canvas Chart ──────────────────────────────────────────────
-const CW=400,CH_H=360,CPL=48,CPR=18,CPT=30,CPB=50,CPW=CW-CPL-CPR,CPH=CH_H-CPT-CPB;
+const CW=430, CH_H=370, CPL=52, CPR=20, CPT=34, CPB=54;
+const CPW=CW-CPL-CPR, CPH=CH_H-CPT-CPB;
+
 function cx(i){ return CPL+(i/(FREQS.length-1))*CPW; }
 function cy(db){ return CPT+((db-DB_MIN)/(DB_MAX-DB_MIN))*CPH; }
+function dbFromY(y){ return DB_MIN + ((y-CPT)/CPH)*(DB_MAX-DB_MIN); }
+function freqIdxFromX(x){ return Math.round((x-CPL)/CPW*(FREQS.length-1)); }
 
-// Draw symbol on canvas
+// snap x to nearest freq column
+function snapFreqX(x){
+  const i = freqIdxFromX(x);
+  const clamped = Math.max(0,Math.min(FREQS.length-1,i));
+  return {idx:clamped, x:cx(clamped)};
+}
+
+// snap db to nearest 5
+function snapDB(db){ return Math.round(db/5)*5; }
+
+// Place a drawn point into the data model
+function placeDrawnPoint(canvasX, canvasY, isRight) {
+  if (drawMode !== 'draw') return;
+
+  const selectedRowId = document.getElementById('drawRowSelect').value;
+  const rowDef = ROWS.find(r => r.id === selectedRowId);
+  if (!rowDef) return;
+
+  // Only allow drawing on the correct ear canvas
+  const rowIsRight = rowDef.ear === 'RE';
+  if (rowIsRight !== isRight) return;
+
+  // Check we're inside the plot area (with some tolerance)
+  if (canvasX < CPL-10 || canvasX > CW-CPR+10) return;
+  if (canvasY < CPT-10 || canvasY > CH_H-CPB+10) return;
+
+  const {idx} = snapFreqX(canvasX);
+  let db = snapDB(dbFromY(canvasY));
+  db = Math.max(DB_MIN, Math.min(DB_MAX, db));
+
+  const f = FREQS[idx];
+  const inputId = `${selectedRowId}_${f}`;
+  const inputEl = document.getElementById(inputId);
+  if (inputEl) {
+    inputEl.value = db;
+    // flash highlight
+    inputEl.style.background = '#d0f0d8';
+    inputEl.style.borderColor = '#1a7a4a';
+    setTimeout(()=>{ inputEl.style.background=''; inputEl.style.borderColor=''; }, 600);
+    recalc();
+  }
+}
+
+// Ghost crosshair state
+let hoverState = { right: null, left: null };
+
+function getCanvasPos(canvas, e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+function attachChartEvents(canvasId, isRight) {
+  const canvas = document.getElementById(canvasId);
+  let dragging = false;
+
+  function handleMove(e) {
+    if (drawMode !== 'draw') { 
+      if (isRight) hoverState.right = null; else hoverState.left = null;
+      drawBothCharts(); return; 
+    }
+    e.preventDefault();
+    const pos = getCanvasPos(canvas, e);
+    const selectedRowId = document.getElementById('drawRowSelect').value;
+    const rowDef = ROWS.find(r => r.id === selectedRowId);
+    const rowIsRight = rowDef ? rowDef.ear === 'RE' : true;
+
+    if (rowIsRight === isRight) {
+      const {idx} = snapFreqX(pos.x);
+      let db = snapDB(dbFromY(pos.y));
+      db = Math.max(DB_MIN, Math.min(DB_MAX, db));
+      if (isRight) hoverState.right = {idx, db};
+      else hoverState.left = {idx, db};
+    } else {
+      if (isRight) hoverState.right = null;
+      else hoverState.left = null;
+    }
+    drawBothCharts();
+
+    if (dragging) placeDrawnPoint(pos.x, pos.y, isRight);
+  }
+
+  function handleDown(e) {
+    if (drawMode !== 'draw') return;
+    e.preventDefault();
+    dragging = true;
+    const pos = getCanvasPos(canvas, e);
+    placeDrawnPoint(pos.x, pos.y, isRight);
+  }
+
+  function handleUp(e) { dragging = false; }
+
+  function handleLeave(e) {
+    dragging = false;
+    if (isRight) hoverState.right = null; else hoverState.left = null;
+    drawBothCharts();
+  }
+
+  canvas.addEventListener('mousedown', handleDown);
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('mouseup', handleUp);
+  canvas.addEventListener('mouseleave', handleLeave);
+  canvas.addEventListener('touchstart', handleDown, {passive:false});
+  canvas.addEventListener('touchmove', handleMove, {passive:false});
+  canvas.addEventListener('touchend', handleUp);
+}
+
+// ── Canvas Symbol Drawing ─────────────────────────────────────
 function canvasSym(ctx,x,y,type,masked,nr,color,r){
   ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2;
   if(nr){
-    // draw base symbol then arrow
     canvasSymBase(ctx,x,y,type,masked,color,r);
-    // downward-right arrow
     ctx.strokeStyle=color; ctx.lineWidth=1.8;
     const ax=x+r+2, ay=y+r+2, ex=ax+10, ey=ay+10;
     ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ex,ey); ctx.stroke();
@@ -337,56 +543,59 @@ function canvasSym(ctx,x,y,type,masked,nr,color,r){
 function canvasSymBase(ctx,x,y,type,masked,color,r){
   ctx.strokeStyle=color; ctx.lineWidth=1.8;
   if(type==='ac'&&!masked){
-    // O (right) or X (left) — determined by caller passing type
     ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
   } else if(type==='ac_x'&&!masked){
     ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y+r); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y+r); ctx.stroke();
   } else if(type==='ac'&&masked){
-    // triangle up (right) △
     ctx.beginPath(); ctx.moveTo(x,y-r); ctx.lineTo(x+r,y+r); ctx.lineTo(x-r,y+r); ctx.closePath(); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
   } else if(type==='ac_x'&&masked){
-    // triangle down (left) ▽
     ctx.beginPath(); ctx.moveTo(x,y+r); ctx.lineTo(x+r,y-r); ctx.lineTo(x-r,y-r); ctx.closePath(); ctx.fillStyle='white'; ctx.fill(); ctx.stroke();
   } else if(type==='bc'&&!masked){
-    // < (right) filled chevron
     ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y); ctx.lineTo(x+r,y+r); ctx.closePath(); ctx.fillStyle=color; ctx.fill();
   } else if(type==='bc_x'&&!masked){
-    // > (left) filled chevron
     ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y); ctx.lineTo(x-r,y+r); ctx.closePath(); ctx.fillStyle=color; ctx.fill();
   } else if(type==='bc'&&masked){
-    // [ bracket (right)
     ctx.beginPath(); ctx.moveTo(x+r,y-r); ctx.lineTo(x-r,y-r); ctx.lineTo(x-r,y+r); ctx.lineTo(x+r,y+r); ctx.fillStyle='transparent'; ctx.stroke();
   } else if(type==='bc_x'&&masked){
-    // ] bracket (left)
     ctx.beginPath(); ctx.moveTo(x-r,y-r); ctx.lineTo(x+r,y-r); ctx.lineTo(x+r,y+r); ctx.lineTo(x-r,y+r); ctx.fillStyle='transparent'; ctx.stroke();
   }
 }
 
-function drawCanvasChart(canvasId, isRight){
-  const color = isRight?'#c0392b':'#1a5fb5';
-  const canvas=document.getElementById(canvasId);
-  const ctx=canvas.getContext('2d');
+function drawCanvasChart(canvasId, isRight) {
+  const color = isRight ? '#c0392b' : '#1a5fb5';
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,CW,CH_H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH_H);
 
-  // grid
+  // grid lines
   const dbs=[-10,0,10,20,30,40,50,60,70,80,90,100,110,120];
-  dbs.forEach(db=>{ const y=cy(db); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(CPL,y); ctx.lineTo(CW-CPR,y); ctx.stroke(); ctx.font='10px Arial'; ctx.fillStyle='#888'; ctx.textAlign='right'; ctx.fillText(db,CPL-6,y+3.5); });
-  FREQS.forEach((f,i)=>{ const x=cx(i); ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(x,CPT); ctx.lineTo(x,CH_H-CPB); ctx.stroke(); ctx.fillStyle='#888'; ctx.font='10px Arial'; ctx.textAlign='center'; const lbl=f==='1k'?'1000':f==='2k'?'2000':f==='4k'?'4000':f==='6k'?'6000':f==='8k'?'8000':f; ctx.fillText(lbl,x,CH_H-CPB+14); });
+  dbs.forEach(db=>{ 
+    const y=cy(db); 
+    ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; 
+    ctx.beginPath(); ctx.moveTo(CPL,y); ctx.lineTo(CW-CPR,y); ctx.stroke(); 
+    ctx.font='10px Arial'; ctx.fillStyle='#888'; ctx.textAlign='right'; 
+    ctx.fillText(db,CPL-6,y+3.5); 
+  });
+  FREQS.forEach((f,i)=>{ 
+    const x=cx(i); 
+    ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=0.5; 
+    ctx.beginPath(); ctx.moveTo(x,CPT); ctx.lineTo(x,CH_H-CPB); ctx.stroke(); 
+    ctx.fillStyle='#888'; ctx.font='10px Arial'; ctx.textAlign='center'; 
+    const lbl=f==='1k'?'1000':f==='2k'?'2000':f==='4k'?'4000':f==='6k'?'6000':f==='8k'?'8000':f; 
+    ctx.fillText(lbl,x,CH_H-CPB+16); 
+  });
   ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.strokeRect(CPL,CPT,CPW,CPH);
-  ctx.save(); ctx.translate(12,CPT+CPH/2); ctx.rotate(-Math.PI/2); ctx.font='10px Arial'; ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.fillText('Hearing Level (dB)',0,0); ctx.restore();
+  ctx.save(); ctx.translate(13,CPT+CPH/2); ctx.rotate(-Math.PI/2); ctx.font='10px Arial'; ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.fillText('Hearing Level (dB)',0,0); ctx.restore();
   ctx.fillStyle='#666'; ctx.textAlign='center'; ctx.font='10px Arial'; ctx.fillText('Frequency (Hz)',CPL+CPW/2,CH_H-8);
   ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(CPL,cy(0)); ctx.lineTo(CW-CPR,cy(0)); ctx.stroke();
   ctx.fillStyle='rgba(200,240,210,0.18)'; ctx.fillRect(CPL,cy(0),CPW,cy(20)-cy(0));
 
   // Rows to draw for this ear
   const earRows = ROWS.filter(r => r.ear===(isRight?'RE':'LE'));
-
   earRows.forEach(rowDef => {
     const symType = rowDef.type==='ac' ? (isRight?'ac':'ac_x') : (isRight?'bc':'bc_x');
     const masked = rowDef.masked;
     const lineDash = rowDef.type==='bc' ? [4,3] : [];
-
-    // collect points
     const pts = FREQS.map((f,i)=>{
       const nr = isNR(rowDef.id,f);
       const v = numVal(`${rowDef.id}_${f}`);
@@ -394,34 +603,78 @@ function drawCanvasChart(canvasId, isRight){
       const yv = nr ? cy(Math.min(DB_MAX, (v!==null?v:DB_MAX))) : cy(v);
       return {x:cx(i), y:yv, nr, masked};
     });
-
-    // draw connecting line — skip blank freqs but keep line connected; only NR breaks the line
     ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.setLineDash(lineDash);
     let prev=null;
     pts.forEach(pt=>{
       if(pt && !pt.nr){
         if(prev && !prev.nr){ ctx.beginPath(); ctx.moveTo(prev.x,prev.y); ctx.lineTo(pt.x,pt.y); ctx.stroke(); }
         prev=pt;
-      } else if(pt && pt.nr){
-        prev=null; // NR breaks the line
-      }
-      // null (blank) = do nothing, prev stays, line will connect to next valid point
+      } else if(pt && pt.nr){ prev=null; }
     });
     ctx.setLineDash([]);
-
-    // draw symbols
     pts.forEach(pt=>{ if(pt) canvasSym(ctx,pt.x,pt.y,symType,masked,pt.nr,color,6); });
   });
 
-  // Canvas legend (compact)
+  // Legend
   const items = isRight
     ? [{sym:'ac',m:false,lbl:'AC'},{sym:'ac',m:true,lbl:'ACM'},{sym:'bc',m:false,lbl:'BC'},{sym:'bc',m:true,lbl:'BCM'}]
     : [{sym:'ac_x',m:false,lbl:'AC'},{sym:'ac_x',m:true,lbl:'ACM'},{sym:'bc_x',m:false,lbl:'BC'},{sym:'bc_x',m:true,lbl:'BCM'}];
   items.forEach((item,i)=>{
-    const lx=CPL+i*52+6, ly=CPT+12;
+    const lx=CPL+i*58+6, ly=CPT+14;
     canvasSymBase(ctx,lx,ly,item.sym,item.m,color,5);
     ctx.font='9px Arial'; ctx.fillStyle=color; ctx.textAlign='left'; ctx.fillText(item.lbl,lx+8,ly+3);
   });
+
+  // ── Draw mode: ghost crosshair + snapped preview ──────────
+  if (drawMode === 'draw') {
+    const hover = isRight ? hoverState.right : hoverState.left;
+    const selectedRowId = document.getElementById('drawRowSelect').value;
+    const rowDef = ROWS.find(r => r.id === selectedRowId);
+    const rowIsRight = rowDef ? rowDef.ear === 'RE' : true;
+
+    if (hover && rowIsRight === isRight) {
+      const gx = cx(hover.idx);
+      const gy = cy(hover.db);
+
+      // Vertical frequency guide
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4,3]);
+      ctx.globalAlpha = 0.35;
+      ctx.beginPath(); ctx.moveTo(gx,CPT); ctx.lineTo(gx,CH_H-CPB); ctx.stroke();
+      // Horizontal dB guide
+      ctx.beginPath(); ctx.moveTo(CPL,gy); ctx.lineTo(CW-CPR,gy); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
+      // Ghost symbol
+      ctx.save();
+      ctx.globalAlpha = 0.55;
+      const symType = rowDef.type==='ac' ? (isRight?'ac':'ac_x') : (isRight?'bc':'bc_x');
+      canvasSymBase(ctx, gx, gy, symType, rowDef.masked, color, 7);
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
+      // dB tooltip label
+      ctx.save();
+      const label = `${FREQS[hover.idx]} Hz: ${hover.db} dB`;
+      ctx.font = 'bold 10px Arial';
+      const tw = ctx.measureText(label).width;
+      let lx = gx + 10, ly2 = gy - 10;
+      if (lx + tw + 8 > CW - CPR) lx = gx - tw - 14;
+      if (ly2 < CPT + 14) ly2 = gy + 20;
+      ctx.fillStyle = 'rgba(0,74,173,0.88)';
+      ctx.beginPath();
+      ctx.roundRect(lx-4, ly2-12, tw+10, 18, 4);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, lx, ly2);
+      ctx.restore();
+    }
+  }
 }
 
 function drawBothCharts(){ drawCanvasChart('chartRight',true); drawCanvasChart('chartLeft',false); }
@@ -445,22 +698,14 @@ function svgSymbol(x,y,type,masked,nr,col){
 
 function svgSymBase(x,y,type,masked,col,r){
   const xf=x.toFixed(1),yf=y.toFixed(1);
-  if(type==='ac'&&!masked)
-    return `<circle cx="${xf}" cy="${yf}" r="${r}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
-  if(type==='ac_x'&&!masked)
-    return `<line x1="${(x-r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x+r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/><line x1="${(x+r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x-r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/>`;
-  if(type==='ac'&&masked)
-    return `<polygon points="${xf},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
-  if(type==='ac_x'&&masked)
-    return `<polygon points="${xf},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
-  if(type==='bc'&&!masked)
-    return `<polygon points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${yf} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
-  if(type==='bc_x'&&!masked)
-    return `<polygon points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${yf} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
-  if(type==='bc'&&masked)
-    return `<polyline points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
-  if(type==='bc_x'&&masked)
-    return `<polyline points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
+  if(type==='ac'&&!masked) return `<circle cx="${xf}" cy="${yf}" r="${r}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='ac_x'&&!masked) return `<line x1="${(x-r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x+r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/><line x1="${(x+r).toFixed(1)}" y1="${(y-r).toFixed(1)}" x2="${(x-r).toFixed(1)}" y2="${(y+r).toFixed(1)}" stroke="${col}" stroke-width="2"/>`;
+  if(type==='ac'&&masked) return `<polygon points="${xf},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='ac_x'&&masked) return `<polygon points="${xf},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)}" fill="white" stroke="${col}" stroke-width="1.5"/>`;
+  if(type==='bc'&&!masked) return `<polygon points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${yf} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
+  if(type==='bc_x'&&!masked) return `<polygon points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${yf} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="${col}"/>`;
+  if(type==='bc'&&masked) return `<polyline points="${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
+  if(type==='bc_x'&&masked) return `<polyline points="${(x-r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y-r).toFixed(1)} ${(x+r).toFixed(1)},${(y+r).toFixed(1)} ${(x-r).toFixed(1)},${(y+r).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.8"/>`;
   return '';
 }
 
@@ -477,7 +722,6 @@ function buildSVGChart(isRight){
   s+=`<text x="${(SL+SPW/2).toFixed(1)}" y="14" text-anchor="middle" font-size="8.5" font-weight="bold" fill="${col}">${title}</text>`;
   s+=`<text transform="translate(9,${(ST+SPH/2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="7" fill="#888">Hearing Level (dB)</text>`;
   s+=`<text x="${(SL+SPW/2).toFixed(1)}" y="${SH-3}" text-anchor="middle" font-size="7.5" fill="#888">Frequency (Hz)</text>`;
-
   const earRows = ROWS.filter(r=>r.ear===(isRight?'RE':'LE'));
   earRows.forEach(rowDef=>{
     const symType=rowDef.type==='ac'?(isRight?'ac':'ac_x'):(isRight?'bc':'bc_x');
@@ -490,21 +734,12 @@ function buildSVGChart(isRight){
       const yv=nr?sy(Math.min(DB_MAX,v!==null?v:DB_MAX)):sy(v);
       return {x:sx(i),y:yv,nr};
     });
-    // lines
-    // Build path segments — blank freqs are skipped (line continues), NR breaks the line
     let seg=[]; const segs=[];
-    pts.forEach(p=>{
-      if(p&&!p.nr) seg.push(p);
-      else if(p&&p.nr){ if(seg.length>1) segs.push(seg); seg=[]; }
-      // null (blank) = skip, seg continues to next valid point
-    });
+    pts.forEach(p=>{ if(p&&!p.nr) seg.push(p); else if(p&&p.nr){ if(seg.length>1) segs.push(seg); seg=[]; } });
     if(seg.length>1) segs.push(seg);
     segs.forEach(seg=>{ const d='M'+seg.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L'); s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.4"${dash}/>`; });
-    // symbols
     pts.forEach(p=>{ if(p) s+=svgSymbol(p.x,p.y,symType,masked,p.nr,col); });
   });
-
-  // Legend
   const litems=isRight
     ?[{t:'ac',m:false,l:'AC'},{t:'ac',m:true,l:'ACM'},{t:'bc',m:false,l:'BC'},{t:'bc',m:true,l:'BCM'}]
     :[{t:'ac_x',m:false,l:'AC'},{t:'ac_x',m:true,l:'ACM'},{t:'bc_x',m:false,l:'BC'},{t:'bc_x',m:true,l:'BCM'}];
@@ -526,11 +761,7 @@ function generate(){
   const ltColor=gradeColor(lt), rtColor=gradeColor(rt);
   const ltLabel=gradeLabel(lt), rtLabel=gradeLabel(rt);
   const fNote=formula===3?'3-freq: 500+1k+2k':'4-freq: 500+1k+2k+4k';
-
-  // PTA line
   const ptaHTML=`<b>PTA: LT - ${ltStr}&nbsp;&nbsp;RT - ${rtStr}</b>`;
-
-  // Table — show all rows that have at least one value
   const activeRows = ROWS.filter(row=> FREQS.some(f=> numVal(`${row.id}_${f}`)!==null || isNR(row.id,f)));
   let tableHTML='';
   if(activeRows.length>0){
@@ -550,16 +781,10 @@ function generate(){
     });
     tableHTML=`<table style="border-collapse:collapse;font-size:10px;width:100%;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 4px;width:12%;"><b>Row</b></td>${fh}</tr>${rh}</table>`;
   }
-
-  // Classification
   const classHTML=`<div style="font-size:10px;margin-top:4px;"><span style="color:${rtColor};font-weight:bold;">RT: ${rtStr} dB - ${rtLabel}</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span style="color:${ltColor};font-weight:bold;">LT: ${ltStr} dB - ${ltLabel}</span>&nbsp;&nbsp;<span style="color:#aaa;font-size:9px;">(${fNote})</span></div>`;
-
-  // Charts
   const svgR=buildSVGChart(true), svgL=buildSVGChart(false);
   const chartHTML=`<table style="border-collapse:collapse;width:100%;margin-top:6px;"><tr><td style="vertical-align:top;padding-right:4px;">${svgR}</td><td style="vertical-align:top;">${svgL}</td></tr></table>`;
-
   const combined=`<div style="line-height:1.4;margin:0;padding:0;font-size:10px;">${ptaHTML}${tableHTML}${classHTML}${chartHTML}</div>`;
-
   document.getElementById('out1').textContent=combined;
   document.getElementById('prev1').innerHTML=combined;
   document.getElementById('outputs-wrapper').style.display='block';
@@ -585,7 +810,9 @@ function clearAll(){
   recalc();
 }
 
-// Init
+// ── Init ──────────────────────────────────────────────────────
+attachChartEvents('chartRight', true);
+attachChartEvents('chartLeft', false);
 recalc();
 </script>
 </body>
