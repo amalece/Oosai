@@ -22,7 +22,7 @@
     .pta-pill .pill-label{font-size:11px;color:#6680c4;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
     .pta-pill .pill-value{font-size:22px;font-weight:700;color:#004aad;font-family:'DM Mono',monospace;}
     .pta-pill .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
-    .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
+    .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-mod-severe{color:#d4620a;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
     .pta-source{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
     .pta-source label{font-size:12px;color:#666;font-weight:600;}
     .pta-source select{padding:6px 10px;font-size:12px;border:1.5px solid #e0e5ef;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
@@ -350,9 +350,9 @@ function calcPTA(srcRow) {
   return vals.reduce((a,b)=>a+b,0)/vals.length;
 }
 
-function getGrade(p){ if(p===null)return{label:'',cls:''}; if(p<=20)return{label:'Normal hearing',cls:'grade-normal'}; if(p<=40)return{label:'Mild loss',cls:'grade-mild'}; if(p<=70)return{label:'Moderate loss',cls:'grade-moderate'}; if(p<=90)return{label:'Severe loss',cls:'grade-severe'}; return{label:'Profound loss',cls:'grade-profound'}; }
-function gradeColor(p){ if(p===null)return'#555'; if(p<=20)return'#1a7a4a'; if(p<=40)return'#5a8a00'; if(p<=70)return'#b86000'; if(p<=90)return'#c0380a'; return'#8b0000'; }
-function gradeLabel(p){ if(p===null)return'N/A'; if(p<=20)return'Normal Hearing (0-20 dB)'; if(p<=40)return'Mild Loss (21-40 dB)'; if(p<=70)return'Moderate Loss (41-70 dB)'; if(p<=90)return'Severe Loss (71-90 dB)'; return'Profound Loss (91+ dB)'; }
+function getGrade(p){ if(p===null)return{label:'',cls:''}; if(p<=20)return{label:'Normal Hearing',cls:'grade-normal'}; if(p<=40)return{label:'Mild Hearing Loss',cls:'grade-mild'}; if(p<=55)return{label:'Moderate Hearing Loss',cls:'grade-moderate'}; if(p<=70)return{label:'Moderately Severe Hearing Loss',cls:'grade-mod-severe'}; if(p<=90)return{label:'Severe Hearing Loss',cls:'grade-severe'}; return{label:'Profound Hearing Loss',cls:'grade-profound'}; }
+function gradeColor(p){ if(p===null)return'#555'; if(p<=20)return'#1a7a4a'; if(p<=40)return'#5a8a00'; if(p<=55)return'#b86000'; if(p<=70)return'#d4620a'; if(p<=90)return'#c0380a'; return'#8b0000'; }
+function gradeLabel(p){ if(p===null)return'N/A'; if(p<=20)return'Normal Hearing (0–20 dB HL)'; if(p<=40)return'Mild Hearing Loss (21–40 dB HL)'; if(p<=55)return'Moderate Hearing Loss (41–55 dB HL)'; if(p<=70)return'Moderately Severe Hearing Loss (56–70 dB HL)'; if(p<=90)return'Severe Hearing Loss (71–90 dB HL)'; return'Profound Hearing Loss (91+ dB HL)'; }
 
 function recalc(){
   const ltSrc = document.getElementById('pta-src-lt').value;
@@ -794,11 +794,36 @@ function generate(){
 
 function copyBlock(boxId,btnId){
   const text=document.getElementById(boxId).textContent;
-  navigator.clipboard.writeText(text).then(()=>{
-    const btn=document.getElementById(btnId);
+  const btn=document.getElementById(btnId);
+  function onSuccess(){
     btn.textContent='Copied!'; btn.className='btn-copy done';
     setTimeout(()=>{ btn.textContent='Copy HTML'; btn.className='btn-copy'; },2500);
-  });
+  }
+  function onFail(){
+    btn.textContent='Failed'; btn.className='btn-copy';
+    setTimeout(()=>{ btn.textContent='Copy HTML'; },2000);
+  }
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(onSuccess).catch(()=>execCopy(text,onSuccess,onFail));
+  } else {
+    execCopy(text,onSuccess,onFail);
+  }
+}
+function execCopy(text,onSuccess,onFail){
+  const ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    ok?onSuccess():onFail();
+  }catch(e){
+    document.body.removeChild(ta);
+    onFail();
+  }
 }
 
 function clearAll(){
