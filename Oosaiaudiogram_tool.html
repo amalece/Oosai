@@ -7,407 +7,454 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',sans-serif;background:#f0f4f8;min-height:100vh;padding:30px 16px;}
-    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);max-width:1100px;margin:0 auto;padding:36px;}
-    .header{display:flex;align-items:center;gap:16px;margin-bottom:32px;border-bottom:1.5px solid #eef1f6;padding-bottom:22px;}
-    .logo-circle{width:48px;height:48px;border-radius:50%;background:#004aad;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
-    .header h1{font-size:18px;color:#111;font-weight:700;}
-    .header p{font-size:13px;color:#888;margin-top:3px;}
-    .section-label{font-size:11px;font-weight:700;color:#999;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
-    .formula-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-    .formula-btn{padding:7px 16px;font-size:12px;border-radius:20px;cursor:pointer;font-weight:600;border:1.5px solid #e0e5ef;background:#fff;color:#555;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
+    body{font-family:'DM Sans',sans-serif;background:#f0f4f8;min-height:100vh;}
+
+    /* ── App shell ── */
+    .app-shell{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+    /* ── Top bar ── */
+    .top-bar{background:#004aad;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+    .logo-circle{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.18);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+    .top-bar h1{font-size:15px;font-weight:700;line-height:1.2;}
+    .top-bar p{font-size:11px;opacity:0.75;margin-top:1px;}
+    .top-badge{margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+
+    /* ── Two-column body ── */
+    .workspace{display:flex;flex:1;overflow:hidden;}
+
+    /* ── LEFT SIDEBAR (sticky, scrollable independently) ── */
+    .sidebar{width:340px;min-width:300px;flex-shrink:0;background:#fff;border-right:1.5px solid #e4e8f0;display:flex;flex-direction:column;overflow:hidden;}
+    .sidebar-inner{flex:1;overflow-y:auto;padding:16px;}
+    .sidebar-inner::-webkit-scrollbar{width:5px;}
+    .sidebar-inner::-webkit-scrollbar-thumb{background:#d0d8ec;border-radius:4px;}
+
+    /* ── RIGHT PANEL (scrollable) ── */
+    .main-panel{flex:1;overflow-y:auto;padding:16px 20px;background:#f0f4f8;}
+    .main-panel::-webkit-scrollbar{width:6px;}
+    .main-panel::-webkit-scrollbar-thumb{background:#c8d0e0;border-radius:4px;}
+
+    /* ── Section labels ── */
+    .section-label{font-size:10px;font-weight:700;color:#999;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+
+    /* ── Formula buttons ── */
+    .formula-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+    .formula-btn{padding:5px 12px;font-size:11px;border-radius:20px;cursor:pointer;font-weight:600;border:1.5px solid #e0e5ef;background:#fff;color:#555;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
     .formula-btn.active{background:#004aad;color:#fff;border-color:#004aad;}
-    .pta-live{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
-    .pta-pill{background:#f0f4ff;border:1.5px solid #c5d3f5;border-radius:10px;padding:10px 18px;min-width:160px;}
-    .pta-pill .pill-label{font-size:11px;color:#6680c4;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .pta-pill .pill-value{font-size:22px;font-weight:700;color:#004aad;font-family:'DM Mono',monospace;}
-    .pta-pill .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
-    /* LT = blue, RT = red pill variants */
-    .pta-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:160px;}
-    .pta-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .pta-pill-lt .pill-value{font-size:22px;font-weight:700;color:#1a5fb5;font-family:'DM Mono',monospace;}
-    .pta-pill-lt .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
-    .pta-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:160px;}
-    .pta-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .pta-pill-rt .pill-value{font-size:22px;font-weight:700;color:#c0392b;font-family:'DM Mono',monospace;}
-    .pta-pill-rt .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
-    /* ABG variants */
-    .abg-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:160px;}
-    .abg-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .abg-pill-lt .pill-value{font-size:18px;font-weight:700;color:#1a5fb5;font-family:'DM Mono',monospace;}
-    .abg-pill-lt .pill-grade{font-size:10px;color:#555;margin-top:3px;}
-    .abg-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:160px;}
-    .abg-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .abg-pill-rt .pill-value{font-size:18px;font-weight:700;color:#c0392b;font-family:'DM Mono',monospace;}
-    .abg-pill-rt .pill-grade{font-size:10px;color:#555;margin-top:3px;}
-    /* Type pill variants */
-    .type-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:260px;}
-    .type-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .type-pill-lt .pill-type{font-size:14px;font-weight:700;margin-top:2px;color:#1a5fb5;}
-    .type-pill-lt .pill-detail{font-size:10px;color:#888;margin-top:3px;}
-    .type-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:260px;}
-    .type-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .type-pill-rt .pill-type{font-size:14px;font-weight:700;margin-top:2px;color:#c0392b;}
-    .type-pill-rt .pill-detail{font-size:10px;color:#888;margin-top:3px;}
+
+    /* ── Source selectors ── */
+    .pta-source{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+    .pta-source-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .pta-source label{font-size:10px;color:#666;font-weight:700;min-width:70px;}
+    .pta-source select{padding:4px 7px;font-size:11px;border:1.5px solid #e0e5ef;border-radius:6px;font-family:'DM Sans',sans-serif;color:#333;outline:none;flex:1;min-width:0;}
+
+    /* ── Live pills (compact 2×2 grid) ── */
+    .pills-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+    .pill{border-radius:8px;padding:8px 10px;}
+    .pill .plbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;}
+    .pill .pval{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;}
+    .pill .pgrd{font-size:9px;margin-top:3px;font-weight:600;}
+    .pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;}
+    .pill-lt .plbl{color:#1a5fb5;}.pill-lt .pval{color:#1a5fb5;}
+    .pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;}
+    .pill-rt .plbl{color:#c0392b;}.pill-rt .pval{color:#c0392b;}
+    .pill-abg-lt{background:#eef3ff;border:1.5px solid #a8c0f0;}
+    .pill-abg-lt .plbl{color:#1a5fb5;}.pill-abg-lt .pval{font-size:15px;color:#1a5fb5;}
+    .pill-abg-rt{background:#fff2f2;border:1.5px solid #f0a8a8;}
+    .pill-abg-rt .plbl{color:#c0392b;}.pill-abg-rt .pval{font-size:15px;color:#c0392b;}
+
+    /* ── Type pills ── */
+    .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+    .type-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:8px;padding:8px 10px;}
+    .type-pill-lt .plbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#1a5fb5;margin-bottom:3px;}
+    .type-pill-lt .ptype{font-size:12px;font-weight:700;color:#1a5fb5;line-height:1.3;}
+    .type-pill-lt .pdetail{font-size:9px;color:#888;margin-top:3px;}
+    .type-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:8px;padding:8px 10px;}
+    .type-pill-rt .plbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#c0392b;margin-bottom:3px;}
+    .type-pill-rt .ptype{font-size:12px;font-weight:700;color:#c0392b;line-height:1.3;}
+    .type-pill-rt .pdetail{font-size:9px;color:#888;margin-top:3px;}
+
+    /* ── SRT compact ── */
+    .srt-compact{background:#f9fafb;border:1.5px solid #e4e8f0;border-radius:8px;padding:10px 12px;margin-bottom:14px;}
+    .srt-compact-title{font-size:10px;font-weight:700;color:#555;margin-bottom:8px;}
+    .srt-row{display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:5px;align-items:center;margin-bottom:5px;}
+    .srt-row:last-child{margin-bottom:0;}
+    .srt-ear-tag{font-size:10px;font-weight:700;}
+    .srt-ear-tag.re{color:#c0392b;}.srt-ear-tag.le{color:#1a5fb5;}
+    .srt-compact label{font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;display:block;margin-bottom:2px;}
+    .srt-compact input,.srt-compact select{width:100%;border:1.5px solid #e0e5ef;border-radius:5px;padding:4px 5px;font-size:11px;font-family:'DM Sans',sans-serif;color:#333;outline:none;text-align:center;}
+    .srt-compact input:focus{border-color:#004aad;background:#eef3ff;}
+
+    /* ── Draw controls ── */
+    .draw-box{background:#f7f9ff;border:1.5px solid #c5d3f5;border-radius:10px;padding:12px;margin-bottom:14px;}
+    .draw-box-title{font-size:11px;font-weight:700;color:#004aad;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .draw-mode-toggle{display:flex;border:1.5px solid #c5d3f5;border-radius:7px;overflow:hidden;margin-bottom:10px;}
+    .draw-mode-btn{flex:1;padding:6px 8px;font-size:11px;font-weight:600;border:none;background:#fff;color:#555;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+    .draw-mode-btn.active{background:#004aad;color:#fff;}
+    .draw-row-sel{margin-bottom:10px;}
+    .draw-row-sel label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px;}
+    .draw-row-sel select{width:100%;padding:5px 8px;font-size:11px;border:1.5px solid #c5d3f5;border-radius:7px;font-family:'DM Sans',sans-serif;color:#333;outline:none;background:#fff;}
+    .draw-tip{font-size:10px;color:#6680c4;background:#eef3ff;border-radius:6px;padding:7px 10px;line-height:1.5;margin-top:8px;}
+    .draw-active-indicator{display:inline-flex;align-items:center;gap:5px;background:#e6fff0;color:#1a7a4a;font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid #a8dfc0;}
+    .draw-inactive-indicator{display:inline-flex;align-items:center;gap:5px;background:#f0f2f5;color:#888;font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid #dde0e8;}
+    .indicator-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+    /* ── Toggle switch ── */
+    .tgl-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+    .tgl-row:last-child{margin-bottom:0;}
+    .tgl-row .tgl-lbl{font-size:10px;color:#555;font-weight:500;cursor:pointer;}
+    .toggle-switch{position:relative;width:32px;height:18px;flex-shrink:0;display:inline-block;}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:20px;transition:.3s;}
+    .toggle-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
+    input:checked+.toggle-slider{background:#004aad;}
+    input:checked+.toggle-slider:before{transform:translateX(14px);}
+
+    /* ── Output section (in sidebar bottom) ── */
+    .sidebar-output{border-top:1.5px solid #e4e8f0;padding:12px 16px;background:#f7f9fc;}
+    .btn-row{display:flex;gap:8px;margin-bottom:0;}
+    button{padding:8px 16px;font-size:12px;border-radius:7px;cursor:pointer;font-weight:600;border:none;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
+    .btn-primary{background:#004aad;color:#fff;}.btn-primary:hover{background:#003a8c;}
+    .btn-clear{background:#f0f2f5;color:#555;}.btn-clear:hover{background:#e4e7ed;}
+
+    /* ── Grade colours ── */
     .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-mod-severe{color:#d4620a;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
-    /* Hearing type pills */
-    .type-live{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
-    .type-pill{background:#fdf8ff;border:1.5px solid #dcc5f5;border-radius:10px;padding:10px 18px;min-width:260px;}
-    .type-pill .pill-label{font-size:11px;color:#8060b0;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-    .type-pill .pill-type{font-size:14px;font-weight:700;margin-top:2px;}
-    .type-pill .pill-detail{font-size:10px;color:#888;margin-top:3px;}
     .type-conductive{color:#d4620a;}.type-snhl{color:#1a5fb5;}.type-mixed{color:#7b1fa2;}.type-normal{color:#1a7a4a;}.type-nd{color:#aaa;}
-    .pta-source{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
-    .pta-source label{font-size:12px;color:#666;font-weight:600;}
-    .pta-source select{padding:6px 10px;font-size:12px;border:1.5px solid #e0e5ef;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
-    /* SRT panel */
-    .srt-panel{background:#f9fafb;border:1.5px solid #e4e8f0;border-radius:12px;padding:14px 18px;margin-bottom:22px;}
-    .srt-panel-title{font-size:12px;font-weight:700;color:#555;margin-bottom:12px;}
-    .srt-grid{display:flex;gap:28px;flex-wrap:wrap;}
-    .srt-ear{display:flex;flex-direction:column;gap:8px;}
-    .srt-ear-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
-    .srt-ear-label.re{color:#c0392b;}.srt-ear-label.le{color:#1a5fb5;}
-    .srt-fields{display:flex;gap:10px;flex-wrap:wrap;}
-    .srt-field{display:flex;flex-direction:column;gap:3px;}
-    .srt-field label{font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
-    .srt-field input{width:72px;border:1.5px solid #e0e5ef;border-radius:6px;padding:5px 6px;font-size:12px;font-family:'DM Sans',sans-serif;color:#333;outline:none;text-align:center;}
-    .srt-field input:focus{border-color:#004aad;background:#eef3ff;}
-    .srt-field select{width:110px;border:1.5px solid #e0e5ef;border-radius:6px;padding:5px 6px;font-size:12px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
-    /* Grid */
-    .grid-scroll{overflow-x:auto;margin-bottom:28px;}
-    table.grid{width:100%;border-collapse:collapse;font-size:12px;min-width:700px;}
-    table.grid th{background:#004aad;color:#fff;padding:8px 5px;text-align:center;font-size:11px;font-weight:600;}
-    table.grid th.row-h{text-align:left;padding-left:12px;width:90px;}
-    table.grid td{border:1px solid #e8ecf3;padding:3px 3px 2px;text-align:center;vertical-align:top;}
-    table.grid td.row-label{font-weight:700;font-size:11px;text-align:left;padding-left:10px;vertical-align:middle;white-space:nowrap;}
+
+    /* ── Grid (right panel) ── */
+    .panel-card{background:#fff;border-radius:12px;border:1.5px solid #e4e8f0;margin-bottom:16px;overflow:hidden;}
+    .panel-card-header{background:#f7f9fc;padding:8px 14px;border-bottom:1px solid #e4e8f0;font-size:11px;font-weight:700;color:#444;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+    .panel-card-body{padding:12px 14px;}
+    .grid-scroll{overflow-x:auto;}
+    table.grid{width:100%;border-collapse:collapse;font-size:11px;min-width:680px;}
+    table.grid th{background:#004aad;color:#fff;padding:6px 4px;text-align:center;font-size:10px;font-weight:600;}
+    table.grid th.row-h{text-align:left;padding-left:10px;width:88px;}
+    table.grid td{border:1px solid #e8ecf3;padding:2px 2px;text-align:center;vertical-align:top;}
+    table.grid td.row-label{font-weight:700;font-size:10px;text-align:left;padding-left:8px;vertical-align:middle;white-space:nowrap;}
     table.grid td.row-label.re{background:#fff2f2;color:#c0392b;}
     table.grid td.row-label.le{background:#f0f4ff;color:#1a5fb5;}
     table.grid td.row-label.abg-re{background:#fff8f0;color:#c0380a;}
     table.grid td.row-label.abg-le{background:#f8f0ff;color:#7b1fa2;}
     table.grid tr:nth-child(even) td:not(.row-label){background:#fafbfd;}
     table.grid tr:nth-child(odd) td:not(.row-label){background:#fff;}
-    .cell-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
-    table.grid input[type=text]{width:46px;border:1.5px solid #e0e5ef;border-radius:5px;padding:4px 3px;text-align:center;font-size:12px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border 0.2s,background 0.2s;background:transparent;}
+    .cell-wrap{display:flex;flex-direction:column;align-items:center;gap:1px;}
+    table.grid input[type=text]{width:44px;border:1.5px solid #e0e5ef;border-radius:4px;padding:3px 2px;text-align:center;font-size:11px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border 0.2s,background 0.2s;background:transparent;}
     table.grid input[type=text]:focus{border-color:#004aad;background:#eef3ff;}
     table.grid input[type=text].highlight{background:#fffbe6;border-color:#f5c518;}
-    .nr-wrap{display:flex;align-items:center;gap:3px;font-size:9px;color:#aaa;}
-    .nr-wrap input[type=checkbox]{width:12px;height:12px;cursor:pointer;accent-color:#c0392b;}
-    .abg-cell{font-size:11px;font-weight:700;padding:6px 3px;font-family:'DM Mono',monospace;vertical-align:middle;}
+    .nr-wrap{display:flex;align-items:center;gap:2px;font-size:8px;color:#aaa;}
+    .nr-wrap input[type=checkbox]{width:11px;height:11px;cursor:pointer;accent-color:#c0392b;}
+    .abg-cell{font-size:10px;font-weight:700;padding:5px 2px;font-family:'DM Mono',monospace;vertical-align:middle;}
     .abg-positive{color:#d4620a;}.abg-negative{color:#1a7a4a;}.abg-zero{color:#888;}
-    .group-header td{background:#e8ecf3!important;font-size:10px;font-weight:700;color:#666;padding:4px 10px;text-align:left;letter-spacing:0.5px;}
-    .abg-group-header td{background:#fff3e0!important;font-size:10px;font-weight:700;color:#b86000;padding:4px 10px;text-align:left;letter-spacing:0.5px;}
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
-    button{padding:10px 22px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:600;border:none;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
-    .btn-primary{background:#004aad;color:#fff;}.btn-primary:hover{background:#003a8c;}
-    .btn-clear{background:#f0f2f5;color:#555;}.btn-clear:hover{background:#e4e7ed;}
-    /* Draw panel */
-    .draw-panel{background:#f7f9ff;border:1.5px solid #c5d3f5;border-radius:14px;padding:18px 20px;margin-bottom:22px;}
-    .draw-panel-title{font-size:13px;font-weight:700;color:#004aad;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-    .draw-panel-title svg{flex-shrink:0;}
-    .draw-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;}
-    .draw-mode-toggle{display:flex;gap:0;border:1.5px solid #c5d3f5;border-radius:8px;overflow:hidden;}
-    .draw-mode-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:#fff;color:#555;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-    .draw-mode-btn.active{background:#004aad;color:#fff;}
-    .row-selector{display:flex;flex-direction:column;gap:4px;}
-    .row-selector label{font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.5px;}
-    .row-selector select{padding:6px 10px;font-size:12px;border:1.5px solid #c5d3f5;border-radius:8px;font-family:'DM Sans',sans-serif;color:#333;outline:none;background:#fff;}
-    .draw-tip{font-size:11px;color:#6680c4;background:#eef3ff;border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.6;}
-    .draw-active-indicator{display:inline-flex;align-items:center;gap:6px;background:#e6fff0;color:#1a7a4a;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid #a8dfc0;}
-    .draw-inactive-indicator{display:inline-flex;align-items:center;gap:6px;background:#f0f2f5;color:#888;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid #dde0e8;}
-    .indicator-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
-    /* Toggle switch */
-    .abg-toggle-wrap{display:flex;align-items:center;gap:8px;}
-    .abg-toggle-wrap label.tgl-lbl{font-size:11px;color:#555;font-weight:500;cursor:pointer;}
-    .toggle-switch{position:relative;width:36px;height:20px;flex-shrink:0;display:inline-block;}
-    .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
-    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:20px;transition:.3s;}
-    .toggle-slider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
-    input:checked+.toggle-slider{background:#004aad;}
-    input:checked+.toggle-slider:before{transform:translateX(16px);}
-    /* Chart */
-    .chart-wrapper{margin-bottom:28px;border:1.5px solid #e4e8f0;border-radius:12px;overflow:hidden;}
-    .chart-header{background:#f7f9fc;padding:10px 16px;border-bottom:1px solid #e4e8f0;font-size:12px;font-weight:700;color:#444;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-    .chart-inner{padding:16px;background:#fff;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+    .group-header td{background:#e8ecf3!important;font-size:9px;font-weight:700;color:#666;padding:3px 8px;text-align:left;letter-spacing:0.4px;}
+    .abg-group-header td{background:#fff3e0!important;font-size:9px;font-weight:700;color:#b86000;padding:3px 8px;text-align:left;letter-spacing:0.4px;}
+
+    /* ── Chart area ── */
+    .chart-inner{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:12px;}
     .chart-container{text-align:center;}
     .canvas-wrap{position:relative;display:inline-block;}
-    .canvas-wrap canvas{display:block;}
+    .canvas-wrap canvas{display:block;max-width:100%;}
     .canvas-wrap.draw-mode-on canvas{cursor:crosshair;}
-    /* Legend */
-    .legend-box{background:#f8f9fb;border:1px solid #e4e8f0;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;gap:24px;flex-wrap:wrap;}
-    .legend-group{display:flex;flex-direction:column;gap:6px;}
-    .legend-group .lg-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+
+    /* ── Symbol legend (collapsible header) ── */
+    .legend-box{display:flex;gap:16px;flex-wrap:wrap;padding:10px 14px;}
+    .legend-group{display:flex;flex-direction:column;gap:4px;}
+    .legend-group .lg-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:1px;}
     .legend-group .lg-title.re{color:#c0392b;}.legend-group .lg-title.le{color:#1a5fb5;}
-    .legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:#555;}
+    .legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:#555;}
     .legend-item svg{flex-shrink:0;}
-    /* Output */
-    .outputs-wrapper{display:none;}
-    .output-block{border:1.5px solid #e4e8f0;border-radius:12px;overflow:hidden;}
-    .output-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f7f9fc;border-bottom:1px solid #e4e8f0;}
-    .output-block-title{font-size:12px;font-weight:700;color:#444;display:flex;align-items:center;gap:8px;}
-    .line-badge{background:#004aad;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
-    .btn-copy{background:#e8f0fe;color:#004aad;padding:6px 14px;font-size:12px;border-radius:6px;}
+
+    /* ── Output block ── */
+    .output-block{border:1.5px solid #e4e8f0;border-radius:10px;overflow:hidden;}
+    .output-block-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#f7f9fc;border-bottom:1px solid #e4e8f0;}
+    .output-block-title{font-size:11px;font-weight:700;color:#444;display:flex;align-items:center;gap:7px;}
+    .line-badge{background:#004aad;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;}
+    .btn-copy{background:#e8f0fe;color:#004aad;padding:5px 12px;font-size:11px;border-radius:6px;}
     .btn-copy:hover{background:#d0e0fc;}.btn-copy.done{background:#e6f9f0;color:#1a7a4a;}
-    .output-box{background:#f8f9fb;padding:12px 16px;font-size:11px;font-family:'DM Mono',monospace;color:#444;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto;line-height:1.6;}
-    .preview-section{margin-top:28px;border-top:1.5px solid #eef1f6;padding-top:24px;}
-    .preview-box{border:1px solid #dde2ed;border-radius:8px;padding:14px;background:#fff;margin-top:12px;}
-    .preview-box-label{font-size:10px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
-    .badge{display:inline-flex;align-items:center;gap:6px;background:#e6f9f0;color:#1a7a4a;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:20px;}
-    .badge-dot{width:7px;height:7px;border-radius:50%;background:#1a7a4a;}
-    .tip{background:#fffbee;border:1px solid #f5e6a3;border-radius:10px;padding:12px 16px;font-size:12px;color:#7a5c00;margin-top:24px;line-height:1.7;}
+    .output-box{background:#f8f9fb;padding:10px 14px;font-size:10px;font-family:'DM Mono',monospace;color:#444;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;line-height:1.6;}
+    .preview-box{border:1px solid #dde2ed;border-radius:7px;padding:12px;background:#fff;margin-top:10px;}
+    .preview-box-label{font-size:9px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+
+    /* ── Tip ── */
+    .tip{background:#fffbee;border:1px solid #f5e6a3;border-radius:8px;padding:10px 14px;font-size:11px;color:#7a5c00;margin-bottom:0;line-height:1.6;}
     .tip strong{color:#5a4000;}
-    .tip code{background:#f5e9b8;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;}
-    .ctrl-group{display:flex;flex-direction:column;gap:6px;}
-    .ctrl-group-label{font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.5px;}
+    .tip code{background:#f5e9b8;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;}
+
+    /* ── Sidebar section divider ── */
+    .sdiv{height:1px;background:#eef1f6;margin:12px 0;}
+
+    /* ── Responsive: collapse sidebar to top on narrow screens ── */
+    @media(max-width:860px){
+      .workspace{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1.5px solid #e4e8f0;max-height:50vh;}
+      .app-shell{height:auto;overflow:auto;}
+      .main-panel{overflow:visible;}
+    }
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="header">
+<div class="app-shell">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
     <div class="logo-circle">O</div>
     <div>
       <h1>Audiogram HTML Generator</h1>
       <p>Oosai Hearingaid Centre — Auto PTA · ABG · CHL/SNHL/Mixed · Draw Mode · SRT/TDT</p>
     </div>
+    <div class="top-badge">Auto PTA · ABG · Draw on Chart · SRT/TDT</div>
   </div>
 
-  <div class="badge"><span class="badge-dot"></span> Auto PTA · ABG auto-calc · Hearing type classification · Draw on chart · SRT/TDT · Single HTML output</div>
+  <div class="workspace">
 
-  <!-- Symbol Legend -->
-  <div class="section-label">Symbol Reference</div>
-  <div class="legend-box">
-    <div class="legend-group">
-      <div class="lg-title re">Right Ear (Red)</div>
-      <div class="legend-item"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="white" stroke="#c0392b" stroke-width="1.8"/></svg> AC Unmasked</div>
-      <div class="legend-item"><svg width="14" height="14"><polygon points="7,2 12,12 2,12" fill="white" stroke="#c0392b" stroke-width="1.8"/></svg> AC Masked</div>
-      <div class="legend-item"><svg width="14" height="14"><polygon points="12,7 5,3 5,11" fill="#c0392b"/></svg> BC Unmasked</div>
-      <div class="legend-item"><svg width="14" height="14"><polyline points="10,2 4,2 4,12 10,12" fill="none" stroke="#c0392b" stroke-width="2"/></svg> BC Masked</div>
-      <div class="legend-item"><svg width="16" height="14"><circle cx="5" cy="5" r="4" fill="white" stroke="#c0392b" stroke-width="1.5"/><line x1="8" y1="8" x2="14" y2="14" stroke="#c0392b" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#c0392b"/></svg> No Response AC</div>
-      <div class="legend-item"><svg width="16" height="14"><polygon points="5,7 1,3 1,11" fill="#c0392b"/><line x1="5" y1="7" x2="14" y2="14" stroke="#c0392b" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#c0392b"/></svg> No Response BC</div>
-    </div>
-    <div class="legend-group">
-      <div class="lg-title le">Left Ear (Blue)</div>
-      <div class="legend-item"><svg width="14" height="14"><line x1="2" y1="2" x2="12" y2="12" stroke="#1a5fb5" stroke-width="2"/><line x1="12" y1="2" x2="2" y2="12" stroke="#1a5fb5" stroke-width="2"/></svg> AC Unmasked</div>
-      <div class="legend-item"><svg width="14" height="14"><polygon points="7,12 2,2 12,2" fill="white" stroke="#1a5fb5" stroke-width="1.8"/></svg> AC Masked</div>
-      <div class="legend-item"><svg width="14" height="14"><polygon points="2,7 9,3 9,11" fill="#1a5fb5"/></svg> BC Unmasked</div>
-      <div class="legend-item"><svg width="14" height="14"><polyline points="4,2 10,2 10,12 4,12" fill="none" stroke="#1a5fb5" stroke-width="2"/></svg> BC Masked</div>
-      <div class="legend-item"><svg width="16" height="14"><line x1="2" y1="2" x2="9" y2="9" stroke="#1a5fb5" stroke-width="2"/><line x1="9" y1="2" x2="2" y2="9" stroke="#1a5fb5" stroke-width="2"/><line x1="5" y1="8" x2="14" y2="14" stroke="#1a5fb5" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#1a5fb5"/></svg> No Response AC</div>
-      <div class="legend-item"><svg width="16" height="14"><polygon points="9,7 13,3 13,11" fill="#1a5fb5"/><line x1="9" y1="7" x2="14" y2="14" stroke="#1a5fb5" stroke-width="1.8"/><polygon points="14,14 10,13 13,10" fill="#1a5fb5"/></svg> No Response BC</div>
-    </div>
-    <div class="legend-group">
-      <div class="lg-title" style="color:#888;">Notes</div>
-      <div style="font-size:11px;color:#777;max-width:220px;line-height:1.6;">
-        <b>Masked</b> = masking applied to opposite ear.<br><br>
-        <b>No Response</b> = tick NR checkbox — plotted with downward arrow at max dB.<br><br>
-        <b>ABG</b> = AC − BC at each frequency, auto-calculated. Shaded area on chart shows the gap.
-      </div>
-    </div>
-  </div>
+    <!-- ══ LEFT SIDEBAR ══ -->
+    <div class="sidebar">
+      <div class="sidebar-inner">
 
-  <!-- Formula -->
-  <div class="section-label">PTA Formula</div>
-  <div class="formula-row">
-    <button class="formula-btn active" id="f3btn" onclick="setFormula(3)">Standard (500 + 1k + 2k) ÷ 3</button>
-    <button class="formula-btn" id="f4btn" onclick="setFormula(4)">Fletcher (500 + 1k + 2k + 4k) ÷ 4</button>
-  </div>
+        <!-- Formula -->
+        <div class="section-label">PTA Formula</div>
+        <div class="formula-row">
+          <button class="formula-btn active" id="f3btn" onclick="setFormula(3)">Standard (500+1k+2k) ÷ 3</button>
+          <button class="formula-btn" id="f4btn" onclick="setFormula(4)">Fletcher (500+1k+2k+4k) ÷ 4</button>
+        </div>
 
-  <!-- Source selectors -->
-  <div class="pta-source">
-    <label>AC PTA from:</label>
-    <select id="pta-src-lt" onchange="recalc()">
-      <option value="ACL">LT — AC Unmasked</option>
-      <option value="ACL_M">LT — AC Masked</option>
-    </select>
-    <select id="pta-src-rt" onchange="recalc()">
-      <option value="ACR">RT — AC Unmasked</option>
-      <option value="ACR_M">RT — AC Masked</option>
-    </select>
-    <span style="color:#ccc;">|</span>
-    <label>BC PTA from:</label>
-    <select id="bc-src-lt" onchange="recalc()">
-      <option value="BCL">LT — BC Unmasked</option>
-      <option value="BCL_M">LT — BC Masked</option>
-    </select>
-    <select id="bc-src-rt" onchange="recalc()">
-      <option value="BCR">RT — BC Unmasked</option>
-      <option value="BCR_M">RT — BC Masked</option>
-    </select>
-  </div>
+        <!-- Source selectors -->
+        <div class="pta-source">
+          <div class="pta-source-row">
+            <label>AC PTA:</label>
+            <select id="pta-src-lt" onchange="recalc()">
+              <option value="ACL">LT — AC Unmasked</option>
+              <option value="ACL_M">LT — AC Masked</option>
+            </select>
+            <select id="pta-src-rt" onchange="recalc()">
+              <option value="ACR">RT — AC Unmasked</option>
+              <option value="ACR_M">RT — AC Masked</option>
+            </select>
+          </div>
+          <div class="pta-source-row">
+            <label>BC PTA:</label>
+            <select id="bc-src-lt" onchange="recalc()">
+              <option value="BCL">LT — BC Unmasked</option>
+              <option value="BCL_M">LT — BC Masked</option>
+            </select>
+            <select id="bc-src-rt" onchange="recalc()">
+              <option value="BCR">RT — BC Unmasked</option>
+              <option value="BCR_M">RT — BC Masked</option>
+            </select>
+          </div>
+        </div>
 
-  <!-- PTA + ABG pills -->
-  <div class="section-label">PTA Average &amp; ABG</div>
-  <div class="pta-live">
-    <div class="pta-pill-lt">
-      <div class="pill-label">LT — Left Ear (AC PTA)</div>
-      <div class="pill-value" id="lt-display">—</div>
-      <div class="pill-grade" id="lt-grade"></div>
-    </div>
-    <div class="pta-pill-rt">
-      <div class="pill-label">RT — Right Ear (AC PTA)</div>
-      <div class="pill-value" id="rt-display">—</div>
-      <div class="pill-grade" id="rt-grade"></div>
-    </div>
-    <div class="abg-pill-lt">
-      <div class="pill-label">LT — ABG (avg)</div>
-      <div class="pill-value" id="lt-abg-display">—</div>
-      <div class="pill-grade" id="lt-abg-note"></div>
-    </div>
-    <div class="abg-pill-rt">
-      <div class="pill-label">RT — ABG (avg)</div>
-      <div class="pill-value" id="rt-abg-display">—</div>
-      <div class="pill-grade" id="rt-abg-note"></div>
-    </div>
-  </div>
+        <div class="sdiv"></div>
 
-  <!-- Hearing Loss Type Classification -->
-  <div class="section-label">Hearing Loss Classification</div>
-  <div class="type-live">
-    <div class="type-pill-lt">
-      <div class="pill-label">LT — Left Ear Type</div>
-      <div class="pill-type" id="lt-type-display">—</div>
-      <div class="pill-detail" id="lt-type-detail"></div>
-    </div>
-    <div class="type-pill-rt">
-      <div class="pill-label">RT — Right Ear Type</div>
-      <div class="pill-type" id="rt-type-display">—</div>
-      <div class="pill-detail" id="rt-type-detail"></div>
-    </div>
-  </div>
+        <!-- PTA + ABG pills -->
+        <div class="section-label">PTA Average &amp; ABG</div>
+        <div class="pills-grid">
+          <div class="pill pill-lt">
+            <div class="plbl">LT — Left (AC PTA)</div>
+            <div class="pval" id="lt-display">—</div>
+            <div class="pgrd" id="lt-grade"></div>
+          </div>
+          <div class="pill pill-rt">
+            <div class="plbl">RT — Right (AC PTA)</div>
+            <div class="pval" id="rt-display">—</div>
+            <div class="pgrd" id="rt-grade"></div>
+          </div>
+          <div class="pill pill-abg-lt">
+            <div class="plbl">LT — ABG (avg)</div>
+            <div class="pval" id="lt-abg-display">—</div>
+            <div class="pgrd" id="lt-abg-note"></div>
+          </div>
+          <div class="pill pill-abg-rt">
+            <div class="plbl">RT — ABG (avg)</div>
+            <div class="pval" id="rt-abg-display">—</div>
+            <div class="pgrd" id="rt-abg-note"></div>
+          </div>
+        </div>
 
-  <!-- SRT / TDT / STAT -->
-  <div class="section-label">SRT &amp; Additional Tests</div>
-  <div class="srt-panel">
-    <div class="srt-panel-title">Speech Reception Threshold &amp; TDT/STAT <span style="font-size:10px;font-weight:400;color:#aaa;">(optional — included in output if filled)</span></div>
-    <div class="srt-grid">
-      <div class="srt-ear">
-        <div class="srt-ear-label re">Right Ear (RE)</div>
-        <div class="srt-fields">
-          <div class="srt-field"><label>SRT (dB)</label><input type="text" id="srt-re" maxlength="6" placeholder="e.g. 40"></div>
-          <div class="srt-field"><label>TDT Result</label><select id="tdt-re"><option value="">—</option><option>Normal</option><option>Abnormal</option></select></div>
-          <div class="srt-field"><label>STAT Result</label><select id="stat-re"><option value="">—</option><option>Pass</option><option>Fail</option></select></div>
+        <!-- Type Classification -->
+        <div class="section-label">Hearing Loss Classification</div>
+        <div class="type-grid">
+          <div class="type-pill-lt">
+            <div class="plbl">LT — Left Ear Type</div>
+            <div class="ptype" id="lt-type-display">—</div>
+            <div class="pdetail" id="lt-type-detail"></div>
+          </div>
+          <div class="type-pill-rt">
+            <div class="plbl">RT — Right Ear Type</div>
+            <div class="ptype" id="rt-type-display">—</div>
+            <div class="pdetail" id="rt-type-detail"></div>
+          </div>
+        </div>
+
+        <div class="sdiv"></div>
+
+        <!-- SRT / TDT / STAT -->
+        <div class="section-label">SRT &amp; Additional Tests</div>
+        <div class="srt-compact">
+          <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:5px;margin-bottom:4px;">
+            <div></div>
+            <div><label>SRT (dB)</label></div>
+            <div><label>TDT</label></div>
+            <div><label>STAT</label></div>
+          </div>
+          <div class="srt-row">
+            <span class="srt-ear-tag re">RE</span>
+            <input type="text" id="srt-re" maxlength="6" placeholder="e.g. 40">
+            <select id="tdt-re"><option value="">—</option><option>Normal</option><option>Abnormal</option></select>
+            <select id="stat-re"><option value="">—</option><option>Pass</option><option>Fail</option></select>
+          </div>
+          <div class="srt-row">
+            <span class="srt-ear-tag le">LE</span>
+            <input type="text" id="srt-le" maxlength="6" placeholder="e.g. 40">
+            <select id="tdt-le"><option value="">—</option><option>Normal</option><option>Abnormal</option></select>
+            <select id="stat-le"><option value="">—</option><option>Pass</option><option>Fail</option></select>
+          </div>
+        </div>
+
+        <div class="sdiv"></div>
+
+        <!-- Draw Mode -->
+        <div class="section-label">Draw Mode</div>
+        <div class="draw-box">
+          <div class="draw-box-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#004aad" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Interactive Drawing
+          </div>
+          <div class="draw-mode-toggle">
+            <button class="draw-mode-btn active" id="btnModeType" onclick="setDrawMode('type')">✏️ Type Values</button>
+            <button class="draw-mode-btn" id="btnModeDraw" onclick="setDrawMode('draw')">🎯 Draw on Chart</button>
+          </div>
+          <div class="draw-row-sel">
+            <label>Row to draw on</label>
+            <select id="drawRowSelect" onchange="updateDrawCursor()">
+              <option value="ACR">RE — AC Unmasked</option>
+              <option value="ACR_M">RE — AC Masked</option>
+              <option value="BCR">RE — BC Unmasked</option>
+              <option value="BCR_M">RE — BC Masked</option>
+              <option value="ACL">LE — AC Unmasked</option>
+              <option value="ACL_M">LE — AC Masked</option>
+              <option value="BCL">LE — BC Unmasked</option>
+              <option value="BCL_M">LE — BC Masked</option>
+            </select>
+          </div>
+          <div id="drawStatusIndicator" class="draw-inactive-indicator" style="margin-bottom:8px;"><span class="indicator-dot"></span>Type mode active</div>
+          <div class="section-label" style="margin-bottom:6px;">Output Options</div>
+          <div class="tgl-row">
+            <label class="toggle-switch"><input type="checkbox" id="abgShadeToggle" checked onchange="drawBothCharts()"><span class="toggle-slider"></span></label>
+            <label class="tgl-lbl" for="abgShadeToggle">Show ABG gap shading on chart</label>
+          </div>
+          <div class="tgl-row">
+            <label class="toggle-switch"><input type="checkbox" id="showAbgRowToggle" checked><span class="toggle-slider"></span></label>
+            <label class="tgl-lbl" for="showAbgRowToggle">Include ABG rows in output table</label>
+          </div>
+          <div class="tgl-row">
+            <label class="toggle-switch"><input type="checkbox" id="showTypeToggle" checked><span class="toggle-slider"></span></label>
+            <label class="tgl-lbl" for="showTypeToggle">Include type &amp; report lines in output</label>
+          </div>
+          <div class="draw-tip" id="drawTip">💡 Switch to <b>Draw on Chart</b>, select the row, then click/drag on the chart to place values.</div>
+        </div>
+
+        <div class="sdiv"></div>
+
+        <!-- Symbol legend -->
+        <div class="section-label">Symbol Reference</div>
+        <div class="panel-card" style="margin-bottom:0;">
+          <div class="legend-box">
+            <div class="legend-group">
+              <div class="lg-title re">Right Ear</div>
+              <div class="legend-item"><svg width="12" height="12"><circle cx="6" cy="6" r="4" fill="white" stroke="#c0392b" stroke-width="1.6"/></svg> AC Unmasked</div>
+              <div class="legend-item"><svg width="12" height="12"><polygon points="6,1 11,11 1,11" fill="white" stroke="#c0392b" stroke-width="1.6"/></svg> AC Masked</div>
+              <div class="legend-item"><svg width="12" height="12"><polygon points="11,6 4,2 4,10" fill="#c0392b"/></svg> BC Unmasked</div>
+              <div class="legend-item"><svg width="12" height="12"><polyline points="9,1 3,1 3,11 9,11" fill="none" stroke="#c0392b" stroke-width="1.8"/></svg> BC Masked</div>
+              <div class="legend-item"><svg width="14" height="12"><circle cx="4" cy="4" r="3" fill="white" stroke="#c0392b" stroke-width="1.3"/><line x1="7" y1="7" x2="12" y2="12" stroke="#c0392b" stroke-width="1.6"/><polygon points="12,12 9,11 11,9" fill="#c0392b"/></svg> No Response</div>
+            </div>
+            <div class="legend-group">
+              <div class="lg-title le">Left Ear</div>
+              <div class="legend-item"><svg width="12" height="12"><line x1="1" y1="1" x2="11" y2="11" stroke="#1a5fb5" stroke-width="1.8"/><line x1="11" y1="1" x2="1" y2="11" stroke="#1a5fb5" stroke-width="1.8"/></svg> AC Unmasked</div>
+              <div class="legend-item"><svg width="12" height="12"><polygon points="6,11 1,1 11,1" fill="white" stroke="#1a5fb5" stroke-width="1.6"/></svg> AC Masked</div>
+              <div class="legend-item"><svg width="12" height="12"><polygon points="1,6 8,2 8,10" fill="#1a5fb5"/></svg> BC Unmasked</div>
+              <div class="legend-item"><svg width="12" height="12"><polyline points="3,1 9,1 9,11 3,11" fill="none" stroke="#1a5fb5" stroke-width="1.8"/></svg> BC Masked</div>
+              <div class="legend-item"><svg width="14" height="12"><line x1="1" y1="1" x2="8" y2="8" stroke="#1a5fb5" stroke-width="1.8"/><line x1="8" y1="1" x2="1" y2="8" stroke="#1a5fb5" stroke-width="1.8"/><line x1="4" y1="7" x2="12" y2="12" stroke="#1a5fb5" stroke-width="1.6"/><polygon points="12,12 9,11 11,9" fill="#1a5fb5"/></svg> No Response</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sidebar-inner -->
+
+      <!-- Generate + Clear pinned to sidebar bottom -->
+      <div class="sidebar-output">
+        <div class="btn-row">
+          <button class="btn-primary" onclick="generate()" style="flex:1;">⚡ Generate HTML Output</button>
+          <button class="btn-clear" onclick="clearAll()">Clear</button>
         </div>
       </div>
-      <div class="srt-ear">
-        <div class="srt-ear-label le">Left Ear (LE)</div>
-        <div class="srt-fields">
-          <div class="srt-field"><label>SRT (dB)</label><input type="text" id="srt-le" maxlength="6" placeholder="e.g. 40"></div>
-          <div class="srt-field"><label>TDT Result</label><select id="tdt-le"><option value="">—</option><option>Normal</option><option>Abnormal</option></select></div>
-          <div class="srt-field"><label>STAT Result</label><select id="stat-le"><option value="">—</option><option>Pass</option><option>Fail</option></select></div>
+    </div><!-- /sidebar -->
+
+    <!-- ══ RIGHT MAIN PANEL ══ -->
+    <div class="main-panel">
+
+      <!-- Audiogram Values Grid -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <span>Audiogram Values</span>
+          <span style="font-size:10px;font-weight:400;color:#999;">Yellow = PTA freqs · NR = No Response · ABG rows = auto-calculated</span>
+          <span id="chartModeLabel" style="font-size:10px;color:#999;font-weight:400;">Type mode active</span>
+        </div>
+        <div class="panel-card-body" style="padding:8px 10px;">
+          <div class="grid-scroll">
+            <table class="grid">
+              <thead>
+                <tr>
+                  <th class="row-h">Row</th>
+                  <th>125</th><th>250</th><th>500</th><th>1k</th><th>2k</th><th>4k</th><th>6k</th><th>8k</th>
+                </tr>
+              </thead>
+              <tbody id="grid-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Draw Mode Panel -->
-  <div class="section-label">Draw Mode</div>
-  <div class="draw-panel">
-    <div class="draw-panel-title">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#004aad" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Interactive Chart Drawing
-    </div>
-    <div class="draw-controls">
-      <div class="ctrl-group">
-        <div class="ctrl-group-label">Mode</div>
-        <div class="draw-mode-toggle">
-          <button class="draw-mode-btn active" id="btnModeType" onclick="setDrawMode('type')">✏️ Type Values</button>
-          <button class="draw-mode-btn" id="btnModeDraw" onclick="setDrawMode('draw')">🎯 Draw on Chart</button>
+      <!-- Live Audiogram Charts -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <span>Live Audiogram Chart <span style="font-size:10px;font-weight:400;color:#999;margin-left:8px;">Updates as you type · Shaded area = Air-Bone Gap</span></span>
+        </div>
+        <div class="chart-inner">
+          <div class="chart-container">
+            <div style="font-size:11px;font-weight:700;color:#1a5fb5;margin-bottom:5px;">LEFT EAR</div>
+            <div class="canvas-wrap" id="wrapLeft"><canvas id="chartLeft" width="400" height="350"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:5px;">RIGHT EAR</div>
+            <div class="canvas-wrap" id="wrapRight"><canvas id="chartRight" width="400" height="350"></canvas></div>
+          </div>
         </div>
       </div>
-      <div class="row-selector">
-        <label>Row to draw on</label>
-        <select id="drawRowSelect" onchange="updateDrawCursor()">
-          <option value="ACR">RE — AC Unmasked</option>
-          <option value="ACR_M">RE — AC Masked</option>
-          <option value="BCR">RE — BC Unmasked</option>
-          <option value="BCR_M">RE — BC Masked</option>
-          <option value="ACL">LE — AC Unmasked</option>
-          <option value="ACL_M">LE — AC Masked</option>
-          <option value="BCL">LE — BC Unmasked</option>
-          <option value="BCL_M">LE — BC Masked</option>
-        </select>
-      </div>
-      <div class="ctrl-group">
-        <div class="ctrl-group-label">Output Options</div>
-        <div class="abg-toggle-wrap" style="margin-bottom:6px;">
-          <label class="toggle-switch"><input type="checkbox" id="abgShadeToggle" checked onchange="drawBothCharts()"><span class="toggle-slider"></span></label>
-          <label class="tgl-lbl" for="abgShadeToggle">Show ABG gap shading on chart</label>
+
+      <!-- Generated Output -->
+      <div class="outputs-wrapper" id="outputs-wrapper">
+        <div class="output-block">
+          <div class="output-block-header">
+            <div class="output-block-title"><span class="line-badge">HTML</span> Copy &amp; paste into description field</div>
+            <button class="btn-copy" id="copy1" onclick="copyBlock('out1','copy1')">Copy HTML</button>
+          </div>
+          <div class="output-box" id="out1"></div>
         </div>
-        <div class="abg-toggle-wrap" style="margin-bottom:6px;">
-          <label class="toggle-switch"><input type="checkbox" id="showAbgRowToggle" checked><span class="toggle-slider"></span></label>
-          <label class="tgl-lbl" for="showAbgRowToggle">Include ABG rows in output table</label>
-        </div>
-        <div class="abg-toggle-wrap">
-          <label class="toggle-switch"><input type="checkbox" id="showTypeToggle" checked><span class="toggle-slider"></span></label>
-          <label class="tgl-lbl" for="showTypeToggle">Include type &amp; report lines in output</label>
+        <div style="margin-top:12px;">
+          <div class="section-label">Preview</div>
+          <div class="preview-box">
+            <div class="preview-box-label">Rendered Output</div>
+            <div id="prev1"></div>
+          </div>
         </div>
       </div>
-      <div class="ctrl-group">
-        <div class="ctrl-group-label">Status</div>
-        <div id="drawStatusIndicator" class="draw-inactive-indicator"><span class="indicator-dot"></span>Type mode active</div>
-      </div>
-    </div>
-    <div class="draw-tip" id="drawTip">
-      💡 Switch to <b>Draw on Chart</b> mode, select the row, then <b>click or drag</b> on the audiogram chart to place values. The input fields update automatically.
-    </div>
-  </div>
 
-  <!-- Grid -->
-  <div class="section-label">Audiogram Values <span style="font-size:10px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:400;">— yellow = PTA frequencies · NR = No Response · ABG rows = read-only, auto-calculated</span></div>
-  <div class="grid-scroll">
-    <table class="grid">
-      <thead>
-        <tr>
-          <th class="row-h">Row</th>
-          <th>125</th><th>250</th><th>500</th><th>1k</th><th>2k</th><th>4k</th><th>6k</th><th>8k</th>
-        </tr>
-      </thead>
-      <tbody id="grid-body"></tbody>
-    </table>
-  </div>
-
-  <!-- Live Chart -->
-  <div class="chart-wrapper">
-    <div class="chart-header">
-      <span>Live Audiogram Chart <span style="font-size:11px;font-weight:400;color:#999;margin-left:10px;">Updates as you type · Shaded area = Air-Bone Gap</span></span>
-      <span id="chartModeLabel" style="font-size:11px;color:#999;font-weight:400;">Click chart in Draw mode to place values</span>
-    </div>
-    <div class="chart-inner">
-      <div class="chart-container">
-        <div style="font-size:11px;font-weight:700;color:#1a5fb5;margin-bottom:6px;">LEFT EAR</div>
-        <div class="canvas-wrap" id="wrapLeft"><canvas id="chartLeft" width="430" height="370"></canvas></div>
+      <div class="tip" style="margin-top:12px;">
+        <strong>How to use:</strong> Fill AC &amp; BC values in the grid <em>or</em> switch to <code>Draw on Chart</code> in the sidebar and click/drag on the audiogram. ABG auto-calculates. Hearing type is classified live. Add SRT/TDT/STAT if needed. Click <b>Generate HTML Output</b> to produce the copyable result.
       </div>
-      <div class="chart-container">
-        <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:6px;">RIGHT EAR</div>
-        <div class="canvas-wrap" id="wrapRight"><canvas id="chartRight" width="430" height="370"></canvas></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="btn-row">
-    <button class="btn-primary" onclick="generate()">Generate HTML Output</button>
-    <button class="btn-clear" onclick="clearAll()">Clear All</button>
-  </div>
-
-  <div class="outputs-wrapper" id="outputs-wrapper">
-    <div class="output-block">
-      <div class="output-block-header">
-        <div class="output-block-title"><span class="line-badge">Single HTML</span> Copy &amp; paste into one description field</div>
-        <button class="btn-copy" id="copy1" onclick="copyBlock('out1','copy1')">Copy HTML</button>
-      </div>
-      <div class="output-box" id="out1"></div>
-    </div>
-    <div class="preview-section">
-      <div class="section-label">Preview</div>
-      <div class="preview-box">
-        <div class="preview-box-label">Rendered Output</div>
-        <div id="prev1"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tip">
-    <strong>How to use:</strong> Fill in AC &amp; BC values manually <em>or</em> switch to <code>Draw on Chart</code> mode and click/drag. ABG is auto-calculated per frequency. Hearing loss type (CHL/SNHL/Mixed/Normal) is classified live using AC PTA, BC PTA, and ABG. Add SRT/TDT/STAT as needed. Click "Generate HTML Output" to produce copyable result including report lines.
-  </div>
-</div>
+    </div><!-- /main-panel -->
+  </div><!-- /workspace -->
+</div><!-- /app-shell -->
 
 <script>
 // ── Data model ────────────────────────────────────────────────
@@ -565,8 +612,8 @@ function recalc(){
   const ltG=getGrade(lt), rtG=getGrade(rt);
   document.getElementById('lt-display').textContent=lt!==null?lt.toFixed(2):'—';
   document.getElementById('rt-display').textContent=rt!==null?rt.toFixed(2):'—';
-  document.getElementById('lt-grade').textContent=ltG.label; document.getElementById('lt-grade').className='pill-grade '+ltG.cls;
-  document.getElementById('rt-grade').textContent=rtG.label; document.getElementById('rt-grade').className='pill-grade '+rtG.cls;
+  document.getElementById('lt-grade').textContent=ltG.label; document.getElementById('lt-grade').className='pgrd '+ltG.cls;
+  document.getElementById('rt-grade').textContent=rtG.label; document.getElementById('rt-grade').className='pgrd '+rtG.cls;
 
   // ABG display
   document.getElementById('lt-abg-display').textContent=ltABG!==null?ltABG.toFixed(1)+' dB':'—';
@@ -590,10 +637,10 @@ function recalc(){
   const ltType=classifyType(lt,bcLtPTA,ltABG);
   const rtType=classifyType(rt,bcRtPTA,rtABG);
   document.getElementById('lt-type-display').textContent=ltType.type;
-  document.getElementById('lt-type-display').className='pill-type';
+  document.getElementById('lt-type-display').className='ptype';
   document.getElementById('lt-type-detail').textContent=ltType.detail;
   document.getElementById('rt-type-display').textContent=rtType.type;
-  document.getElementById('rt-type-display').className='pill-type';
+  document.getElementById('rt-type-display').className='ptype';
   document.getElementById('rt-type-detail').textContent=rtType.detail;
 
   updateHighlights();
@@ -613,29 +660,26 @@ function setDrawMode(mode){
   document.getElementById('btnModeType').className='draw-mode-btn'+(mode==='type'?' active':'');
   document.getElementById('btnModeDraw').className='draw-mode-btn'+(mode==='draw'?' active':'');
   const wR=document.getElementById('wrapRight'), wL=document.getElementById('wrapLeft');
+  const modeLabel=document.getElementById('chartModeLabel');
   if(mode==='draw'){
     wR.classList.add('draw-mode-on'); wL.classList.add('draw-mode-on');
     document.getElementById('drawStatusIndicator').className='draw-active-indicator';
     document.getElementById('drawStatusIndicator').innerHTML='<span class="indicator-dot"></span>Draw mode active';
     document.getElementById('drawTip').innerHTML='🎯 <b>Click or drag</b> on either chart to place a value for the selected row. Input fields update instantly.';
-    document.getElementById('chartModeLabel').textContent='Draw mode ON — click/drag to place values';
-    document.getElementById('chartModeLabel').style.color='#004aad';
-    document.getElementById('chartModeLabel').style.fontWeight='600';
+    if(modeLabel){modeLabel.textContent='Draw mode ON — click/drag on chart';modeLabel.style.color='#004aad';modeLabel.style.fontWeight='600';}
   } else {
     wR.classList.remove('draw-mode-on'); wL.classList.remove('draw-mode-on');
     document.getElementById('drawStatusIndicator').className='draw-inactive-indicator';
     document.getElementById('drawStatusIndicator').innerHTML='<span class="indicator-dot"></span>Type mode active';
-    document.getElementById('drawTip').innerHTML='💡 Switch to <b>Draw on Chart</b> mode, select the row, then <b>click or drag</b> on the audiogram chart to place values.';
-    document.getElementById('chartModeLabel').textContent='Click chart in Draw mode to place values';
-    document.getElementById('chartModeLabel').style.color='#999';
-    document.getElementById('chartModeLabel').style.fontWeight='400';
+    document.getElementById('drawTip').innerHTML='💡 Switch to <b>Draw on Chart</b>, select the row, then click/drag on the chart to place values.';
+    if(modeLabel){modeLabel.textContent='Type mode active';modeLabel.style.color='#999';modeLabel.style.fontWeight='400';}
   }
   drawBothCharts();
 }
 function updateDrawCursor(){drawBothCharts();}
 
 // ── Canvas maths ──────────────────────────────────────────────
-const CW=430,CH_H=370,CPL=52,CPR=20,CPT=34,CPB=54,CPW=430-52-20,CPH=370-34-54;
+const CW=400,CH_H=350,CPL=52,CPR=20,CPT=34,CPB=54,CPW=400-52-20,CPH=350-34-54;
 function cx(i){return CPL+(i/(FREQS.length-1))*CPW;}
 function cy(db){return CPT+((db-DB_MIN)/(DB_MAX-DB_MIN))*CPH;}
 function dbFromY(y){return DB_MIN+((y-CPT)/CPH)*(DB_MAX-DB_MIN);}
