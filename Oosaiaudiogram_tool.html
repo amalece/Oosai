@@ -299,10 +299,18 @@
         </select>
       </div>
       <div class="ctrl-group">
-        <div class="ctrl-group-label">ABG Shading on Chart</div>
-        <div class="abg-toggle-wrap">
+        <div class="ctrl-group-label">Output Options</div>
+        <div class="abg-toggle-wrap" style="margin-bottom:6px;">
           <label class="toggle-switch"><input type="checkbox" id="abgShadeToggle" checked onchange="drawBothCharts()"><span class="toggle-slider"></span></label>
-          <label class="tgl-lbl" for="abgShadeToggle">Show gap shading</label>
+          <label class="tgl-lbl" for="abgShadeToggle">Show ABG gap shading on chart</label>
+        </div>
+        <div class="abg-toggle-wrap" style="margin-bottom:6px;">
+          <label class="toggle-switch"><input type="checkbox" id="showAbgRowToggle" checked><span class="toggle-slider"></span></label>
+          <label class="tgl-lbl" for="showAbgRowToggle">Include ABG rows in output table</label>
+        </div>
+        <div class="abg-toggle-wrap">
+          <label class="toggle-switch"><input type="checkbox" id="showTypeToggle" checked><span class="toggle-slider"></span></label>
+          <label class="tgl-lbl" for="showTypeToggle">Include type &amp; report lines in output</label>
         </div>
       </div>
       <div class="ctrl-group">
@@ -337,12 +345,12 @@
     </div>
     <div class="chart-inner">
       <div class="chart-container">
-        <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:6px;">RIGHT EAR</div>
-        <div class="canvas-wrap" id="wrapRight"><canvas id="chartRight" width="430" height="370"></canvas></div>
-      </div>
-      <div class="chart-container">
         <div style="font-size:11px;font-weight:700;color:#1a5fb5;margin-bottom:6px;">LEFT EAR</div>
         <div class="canvas-wrap" id="wrapLeft"><canvas id="chartLeft" width="430" height="370"></canvas></div>
+      </div>
+      <div class="chart-container">
+        <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:6px;">RIGHT EAR</div>
+        <div class="canvas-wrap" id="wrapRight"><canvas id="chartRight" width="430" height="370"></canvas></div>
       </div>
     </div>
   </div>
@@ -804,6 +812,15 @@ function buildSVGChart(isRight){
   s+=`</svg>`;return s;
 }
 
+// ── Type class → hex colour (for inline HTML output) ─────────
+function typeColor(cls){
+  if(cls==='type-conductive') return'#d4620a';
+  if(cls==='type-snhl')       return'#1a5fb5';
+  if(cls==='type-mixed')      return'#7b1fa2';
+  if(cls==='type-normal')     return'#1a7a4a';
+  return'#aaa';
+}
+
 // ── Generate HTML output ──────────────────────────────────────
 function generate(){
   const ltSrc=document.getElementById('pta-src-lt').value;
@@ -820,9 +837,18 @@ function generate(){
   const ltType=classifyType(lt,bcLtPTA,ltABG);
   const rtType=classifyType(rt,bcRtPTA,rtABG);
 
-  const ptaHTML=`<b>PTA: LT — ${ltStr} dB &nbsp; RT — ${rtStr} dB</b>`;
+  const showAbgRows = document.getElementById('showAbgRowToggle').checked;
+  const showType    = document.getElementById('showTypeToggle').checked;
 
-  // Values + ABG table
+  // ── PTA header: LE left | RE right on one line ──
+  const ptaHTML=`<div style="display:table;width:100%;font-size:10px;margin-bottom:2px;">
+    <div style="display:table-row;">
+      <div style="display:table-cell;text-align:left;"><b style="color:#1a5fb5;">LT: ${ltStr} dB</b></div>
+      <div style="display:table-cell;text-align:right;"><b style="color:#c0392b;">RT: ${rtStr} dB</b></div>
+    </div>
+  </div>`;
+
+  // ── Values + optional ABG table ──
   const activeRows=ROWS.filter(row=>FREQS.some(f=>numVal(`${row.id}_${f}`)!==null||isNR(row.id,f)));
   let tableHTML='';
   if(activeRows.length>0){
@@ -835,26 +861,49 @@ function generate(){
       FREQS.forEach(f=>{const nr=isNR(row.id,f);const v=val(`${row.id}_${f}`);cells+=`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;${nr?'color:#c0392b;font-style:italic;':''}">${nr?`${v||''}NR`:(v||'___')}</td>`;});
       rh+=`<tr style="${bg}">${cells}</tr>`;
     });
-    // ABG rows
-    ['RE','LE'].forEach(ear=>{
-      const acId=ear==='RE'?rtSrc:ltSrc, bcId=ear==='RE'?bcRt:bcLt;
-      if(!FREQS.some(f=>abgAtFreq(acId,bcId,f)!==null)) return;
-      const ec=ear==='RE'?'color:#c0380a;':'color:#7b1fa2;';
-      let cells=`<td style="border:1px solid #ccc;padding:2px 4px;font-weight:bold;${ec}">${ear} ABG</td>`;
-      FREQS.forEach(f=>{const v=abgAtFreq(acId,bcId,f);const sig=v!==null&&v>=10?'font-weight:bold;color:#d4620a;':'';cells+=`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;${sig}">${v!==null?v.toFixed(0)+' dB':'—'}</td>`;});
-      rh+=`<tr style="background:#fff8f0;">${cells}</tr>`;
-    });
+    // ABG rows — only if toggle is on
+    if(showAbgRows){
+      ['RE','LE'].forEach(ear=>{
+        const acId=ear==='RE'?rtSrc:ltSrc, bcId=ear==='RE'?bcRt:bcLt;
+        if(!FREQS.some(f=>abgAtFreq(acId,bcId,f)!==null)) return;
+        const ec=ear==='RE'?'color:#c0380a;':'color:#7b1fa2;';
+        let cells=`<td style="border:1px solid #ccc;padding:2px 4px;font-weight:bold;${ec}">${ear} ABG</td>`;
+        FREQS.forEach(f=>{const v=abgAtFreq(acId,bcId,f);const sig=v!==null&&v>=10?'font-weight:bold;color:#d4620a;':'';cells+=`<td style="border:1px solid #ccc;padding:2px 4px;text-align:center;${sig}">${v!==null?v.toFixed(0)+' dB':'—'}</td>`;});
+        rh+=`<tr style="background:#fff8f0;">${cells}</tr>`;
+      });
+    }
     tableHTML=`<table style="border-collapse:collapse;font-size:10px;width:100%;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 4px;width:12%;"><b>Row</b></td>${fh}</tr>${rh}</table>`;
   }
 
-  const classHTML=`<div style="font-size:10px;margin-top:4px;">
-    <span style="color:${rtColor};font-weight:bold;">RT: ${rtStr} dB — ${rtLabel}</span> &nbsp;|&nbsp; <span style="color:${ltColor};font-weight:bold;">LT: ${ltStr} dB — ${ltLabel}</span> <span style="color:#aaa;font-size:9px;">(${fNote})</span><br>
-    <span style="color:#7b1fa2;font-weight:bold;">RT Type: ${rtType.type}</span> &nbsp;|&nbsp; <span style="color:#7b1fa2;font-weight:bold;">LT Type: ${ltType.type}</span>
-  </div>`;
+  // ── Combined per-ear summary lines: LE left | RE right ──
+  // Format: LT: 75.00 dB — Severe Hearing Loss (71–90 dB HL) | Mixed Hearing Loss
+  let classHTML='', reportHTML='';
+  if(showType){
+    const ltSummary=lt!==null
+      ? `<b style="color:#1a5fb5;">LT: ${ltStr} dB</b> — <span style="color:${ltColor};">${gradeLabel(lt)}</span>${ltType.type&&ltType.type!=='—'?` | <span style="color:${typeColor(ltType.cssClass)};">${ltType.type}</span>`:''}`
+      : `<b style="color:#1a5fb5;">LT: ___</b>`;
+    const rtSummary=rt!==null
+      ? `<b style="color:#c0392b;">RT: ${rtStr} dB</b> — <span style="color:${rtColor};">${gradeLabel(rt)}</span>${rtType.type&&rtType.type!=='—'?` | <span style="color:${typeColor(rtType.cssClass)};">${rtType.type}</span>`:''}`
+      : `<b style="color:#c0392b;">RT: ___</b>`;
+    classHTML=`<div style="font-size:10px;margin-top:4px;display:table;width:100%;">
+      <div style="display:table-row;">
+        <div style="display:table-cell;text-align:left;padding-right:8px;">${ltSummary}</div>
+        <div style="display:table-cell;text-align:right;padding-left:8px;">${rtSummary}</div>
+      </div>
+    </div><div style="font-size:9px;color:#aaa;margin-top:1px;">(${fNote})</div>`;
 
-  const rtLine=rtType.reportLine?`<b>RT:</b> ${rtType.reportLine}`:'';
-  const ltLine=ltType.reportLine?`<b>LT:</b> ${ltType.reportLine}`:'';
-  const reportHTML=(rtLine||ltLine)?`<div style="font-size:10px;margin-top:4px;color:#444;font-style:italic;">${[rtLine,ltLine].filter(Boolean).join('<br>')}</div>`:'';
+    // Report lines: LE left, RE right in two cells
+    const ltLine=ltType.reportLine?`<i style="color:#444;"><b>LT:</b> ${ltType.reportLine}</i>`:'';
+    const rtLine=rtType.reportLine?`<i style="color:#444;"><b>RT:</b> ${rtType.reportLine}</i>`:'';
+    if(ltLine||rtLine){
+      reportHTML=`<div style="font-size:10px;margin-top:4px;display:table;width:100%;">
+        <div style="display:table-row;">
+          <div style="display:table-cell;text-align:left;padding-right:8px;vertical-align:top;">${ltLine}</div>
+          <div style="display:table-cell;text-align:right;padding-left:8px;vertical-align:top;">${rtLine}</div>
+        </div>
+      </div>`;
+    }
+  }
 
   // SRT/TDT/STAT
   const srtRE=document.getElementById('srt-re').value.trim();
@@ -871,8 +920,8 @@ function generate(){
     srtHTML=`<table style="border-collapse:collapse;font-size:10px;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 6px;"><b>Ear</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>SRT (dB)</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>TDT</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>STAT</b></td></tr>${rows}</table>`;
   }
 
-  const svgR=buildSVGChart(true),svgL=buildSVGChart(false);
-  const chartHTML=`<table style="border-collapse:collapse;width:100%;margin-top:6px;"><tr><td style="vertical-align:top;padding-right:4px;">${svgR}</td><td style="vertical-align:top;">${svgL}</td></tr></table>`;
+  const svgL=buildSVGChart(false),svgR=buildSVGChart(true);
+  const chartHTML=`<table style="border-collapse:collapse;width:100%;margin-top:6px;"><tr><td style="vertical-align:top;padding-right:4px;">${svgL}</td><td style="vertical-align:top;">${svgR}</td></tr></table>`;
   const combined=`<div style="line-height:1.4;margin:0;padding:0;font-size:10px;">${ptaHTML}${tableHTML}${classHTML}${reportHTML}${srtHTML}${chartHTML}</div>`;
   document.getElementById('out1').textContent=combined;
   document.getElementById('prev1').innerHTML=combined;
