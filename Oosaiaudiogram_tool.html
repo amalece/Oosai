@@ -22,6 +22,33 @@
     .pta-pill .pill-label{font-size:11px;color:#6680c4;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
     .pta-pill .pill-value{font-size:22px;font-weight:700;color:#004aad;font-family:'DM Mono',monospace;}
     .pta-pill .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
+    /* LT = blue, RT = red pill variants */
+    .pta-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:160px;}
+    .pta-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .pta-pill-lt .pill-value{font-size:22px;font-weight:700;color:#1a5fb5;font-family:'DM Mono',monospace;}
+    .pta-pill-lt .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
+    .pta-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:160px;}
+    .pta-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .pta-pill-rt .pill-value{font-size:22px;font-weight:700;color:#c0392b;font-family:'DM Mono',monospace;}
+    .pta-pill-rt .pill-grade{font-size:11px;margin-top:3px;font-weight:600;}
+    /* ABG variants */
+    .abg-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:160px;}
+    .abg-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .abg-pill-lt .pill-value{font-size:18px;font-weight:700;color:#1a5fb5;font-family:'DM Mono',monospace;}
+    .abg-pill-lt .pill-grade{font-size:10px;color:#555;margin-top:3px;}
+    .abg-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:160px;}
+    .abg-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .abg-pill-rt .pill-value{font-size:18px;font-weight:700;color:#c0392b;font-family:'DM Mono',monospace;}
+    .abg-pill-rt .pill-grade{font-size:10px;color:#555;margin-top:3px;}
+    /* Type pill variants */
+    .type-pill-lt{background:#eef3ff;border:1.5px solid #a8c0f0;border-radius:10px;padding:10px 18px;min-width:260px;}
+    .type-pill-lt .pill-label{font-size:11px;color:#1a5fb5;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .type-pill-lt .pill-type{font-size:14px;font-weight:700;margin-top:2px;color:#1a5fb5;}
+    .type-pill-lt .pill-detail{font-size:10px;color:#888;margin-top:3px;}
+    .type-pill-rt{background:#fff2f2;border:1.5px solid #f0a8a8;border-radius:10px;padding:10px 18px;min-width:260px;}
+    .type-pill-rt .pill-label{font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .type-pill-rt .pill-type{font-size:14px;font-weight:700;margin-top:2px;color:#c0392b;}
+    .type-pill-rt .pill-detail{font-size:10px;color:#888;margin-top:3px;}
     .grade-normal{color:#1a7a4a;}.grade-mild{color:#5a8a00;}.grade-moderate{color:#b86000;}.grade-mod-severe{color:#d4620a;}.grade-severe{color:#c0380a;}.grade-profound{color:#8b0000;}
     /* Hearing type pills */
     .type-live{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
@@ -209,39 +236,39 @@
   <!-- PTA + ABG pills -->
   <div class="section-label">PTA Average &amp; ABG</div>
   <div class="pta-live">
-    <div class="pta-pill">
+    <div class="pta-pill-lt">
       <div class="pill-label">LT — Left Ear (AC PTA)</div>
       <div class="pill-value" id="lt-display">—</div>
       <div class="pill-grade" id="lt-grade"></div>
     </div>
-    <div class="pta-pill">
+    <div class="pta-pill-rt">
       <div class="pill-label">RT — Right Ear (AC PTA)</div>
       <div class="pill-value" id="rt-display">—</div>
       <div class="pill-grade" id="rt-grade"></div>
     </div>
-    <div class="pta-pill" style="background:#fff8f0;border-color:#f5d5a0;">
-      <div class="pill-label" style="color:#b86000;">LT — ABG (avg)</div>
-      <div class="pill-value" id="lt-abg-display" style="font-size:18px;color:#d4620a;">—</div>
-      <div class="pill-grade" id="lt-abg-note" style="font-size:10px;color:#888;"></div>
+    <div class="abg-pill-lt">
+      <div class="pill-label">LT — ABG (avg)</div>
+      <div class="pill-value" id="lt-abg-display">—</div>
+      <div class="pill-grade" id="lt-abg-note"></div>
     </div>
-    <div class="pta-pill" style="background:#fff8f0;border-color:#f5d5a0;">
-      <div class="pill-label" style="color:#b86000;">RT — ABG (avg)</div>
-      <div class="pill-value" id="rt-abg-display" style="font-size:18px;color:#d4620a;">—</div>
-      <div class="pill-grade" id="rt-abg-note" style="font-size:10px;color:#888;"></div>
+    <div class="abg-pill-rt">
+      <div class="pill-label">RT — ABG (avg)</div>
+      <div class="pill-value" id="rt-abg-display">—</div>
+      <div class="pill-grade" id="rt-abg-note"></div>
     </div>
   </div>
 
   <!-- Hearing Loss Type Classification -->
   <div class="section-label">Hearing Loss Classification</div>
   <div class="type-live">
-    <div class="type-pill">
+    <div class="type-pill-lt">
       <div class="pill-label">LT — Left Ear Type</div>
-      <div class="pill-type type-nd" id="lt-type-display">—</div>
+      <div class="pill-type" id="lt-type-display">—</div>
       <div class="pill-detail" id="lt-type-detail"></div>
     </div>
-    <div class="type-pill">
+    <div class="type-pill-rt">
       <div class="pill-label">RT — Right Ear Type</div>
-      <div class="pill-type type-nd" id="rt-type-display">—</div>
+      <div class="pill-type" id="rt-type-display">—</div>
       <div class="pill-detail" id="rt-type-detail"></div>
     </div>
   </div>
@@ -563,10 +590,10 @@ function recalc(){
   const ltType=classifyType(lt,bcLtPTA,ltABG);
   const rtType=classifyType(rt,bcRtPTA,rtABG);
   document.getElementById('lt-type-display').textContent=ltType.type;
-  document.getElementById('lt-type-display').className='pill-type '+ltType.cssClass;
+  document.getElementById('lt-type-display').className='pill-type';
   document.getElementById('lt-type-detail').textContent=ltType.detail;
   document.getElementById('rt-type-display').textContent=rtType.type;
-  document.getElementById('rt-type-display').className='pill-type '+rtType.cssClass;
+  document.getElementById('rt-type-display').className='pill-type';
   document.getElementById('rt-type-detail').textContent=rtType.detail;
 
   updateHighlights();
@@ -876,14 +903,35 @@ function generate(){
   }
 
   // ── Combined per-ear summary lines: LE left | RE right ──
-  // Format: LT: 75.00 dB — Severe Hearing Loss (71–90 dB HL) | Mixed Hearing Loss
+  // Format: LT: 30.00 dB — Mild Sensorineural Hearing Loss (21–40 dB HL)
   let classHTML='', reportHTML='';
   if(showType){
-    const ltSummary=lt!==null
-      ? `<b style="color:#1a5fb5;">LT: ${ltStr} dB</b> — <span style="color:${ltColor};">${gradeLabel(lt)}</span>${ltType.type&&ltType.type!=='—'?` | <span style="color:${typeColor(ltType.cssClass)};">${ltType.type}</span>`:''}`
+    // Build combined label: degree adjective + type noun merged into one phrase
+    function combinedLabel(ptaVal, type){
+      if(ptaVal===null) return null;
+      // Degree adjective (strip trailing "Hearing Loss" / "Hearing")
+      const degFull=gradeLabel(ptaVal); // e.g. "Mild Hearing Loss (21–40 dB HL)"
+      // Extract bracket range e.g. "(21–40 dB HL)"
+      const rangeMatch=degFull.match(/\(.*?\)/);
+      const range=rangeMatch?rangeMatch[0]:'';
+      // Degree word(s) before "Hearing"
+      const degWord=degFull.replace(/Hearing.*$/,'').trim(); // e.g. "Mild" / "Moderately Severe"
+      // Type word(s): use type.type but strip trailing "Hearing Loss" then re-add
+      const typeName=type&&type.type&&type.type!=='—'?type.type:'';
+      if(typeName){
+        // e.g. typeName = "Sensorineural Hearing Loss"
+        // combined = "Mild Sensorineural Hearing Loss (21–40 dB HL)"
+        return`${degWord} ${typeName} ${range}`.trim();
+      }
+      return degFull;
+    }
+    const ltCombined = combinedLabel(lt, ltType);
+    const rtCombined = combinedLabel(rt, rtType);
+    const ltSummary = lt!==null
+      ? `<b style="color:#1a5fb5;">LT: ${ltStr} dB</b> — <span style="color:${ltColor};">${ltCombined}</span>`
       : `<b style="color:#1a5fb5;">LT: ___</b>`;
-    const rtSummary=rt!==null
-      ? `<b style="color:#c0392b;">RT: ${rtStr} dB</b> — <span style="color:${rtColor};">${gradeLabel(rt)}</span>${rtType.type&&rtType.type!=='—'?` | <span style="color:${typeColor(rtType.cssClass)};">${rtType.type}</span>`:''}`
+    const rtSummary = rt!==null
+      ? `<b style="color:#c0392b;">RT: ${rtStr} dB</b> — <span style="color:${rtColor};">${rtCombined}</span>`
       : `<b style="color:#c0392b;">RT: ___</b>`;
     classHTML=`<div style="font-size:10px;margin-top:4px;display:table;width:100%;">
       <div style="display:table-row;">
