@@ -181,6 +181,13 @@
     /* ── Sidebar section divider ── */
     .sdiv{height:1px;background:#eef1f6;margin:12px 0;}
 
+    /* ── Prescription reference box ── */
+    .rx-box{background:#fffbee;border:1.5px solid #f5d060;border-radius:8px;padding:10px 12px;margin-bottom:0;}
+    .rx-box-title{font-size:9px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+    .rx-line{font-size:11px;font-weight:600;line-height:1.5;padding:2px 0;}
+    .rx-line-lt{color:#1a5fb5;}
+    .rx-line-rt{color:#c0392b;}
+
     /* ── Responsive: collapse sidebar to top on narrow screens ── */
     @media(max-width:860px){
       .workspace{flex-direction:column;}
@@ -282,6 +289,17 @@
             <div class="ptype" id="rt-type-display">—</div>
             <div class="pdetail" id="rt-type-detail"></div>
           </div>
+        </div>
+
+        <!-- Prescription Reference (internal only, not printed in output) -->
+        <div class="section-label" style="margin-top:10px;">📋 Prescription Reference <span style="font-size:9px;color:#aaa;text-transform:none;letter-spacing:0;font-weight:400;">(internal only — not in output)</span></div>
+        <div class="rx-box">
+          <div class="rx-box-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a5c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Combined Degree + Type (with dB range)
+          </div>
+          <div class="rx-line rx-line-lt" id="rx-lt">—</div>
+          <div class="rx-line rx-line-rt" id="rx-rt">—</div>
         </div>
 
         <div class="sdiv"></div>
@@ -643,6 +661,12 @@ function recalc(){
   document.getElementById('rt-type-display').className='ptype';
   document.getElementById('rt-type-detail').textContent=rtType.detail;
 
+  // Prescription reference box (full combined label WITH dB range — internal only)
+  const rxLtEl=document.getElementById('rx-lt');
+  const rxRtEl=document.getElementById('rx-rt');
+  if(rxLtEl) rxLtEl.textContent = lt!==null ? `LT: ${lt.toFixed(2)} dB — ${buildCombinedLabel(lt, ltType, true)}` : 'LT: —';
+  if(rxRtEl) rxRtEl.textContent = rt!==null ? `RT: ${rt.toFixed(2)} dB — ${buildCombinedLabel(rt, rtType, true)}` : 'RT: —';
+
   updateHighlights();
   drawBothCharts();
 }
@@ -892,6 +916,23 @@ function typeColor(cls){
   return'#aaa';
 }
 
+// ── Build combined degree + type label ────────────────────────
+// includeRange=true  → "Mild Sensorineural Hearing Loss (21–40 dB HL)"  [for sidebar]
+// includeRange=false → "Mild Sensorineural Hearing Loss"                [for printed output]
+function buildCombinedLabel(ptaVal, type, includeRange){
+  if(ptaVal===null) return null;
+  const degFull=gradeLabel(ptaVal);
+  const rangeMatch=degFull.match(/\(.*?\)/);
+  const range=rangeMatch?rangeMatch[0]:'';
+  const degWord=degFull.replace(/Hearing.*$/,'').trim();
+  const typeName=type&&type.type&&type.type!=='—'?type.type:'';
+  if(typeName){
+    const base=`${degWord} ${typeName}`.trim();
+    return includeRange&&range ? `${base} ${range}` : base;
+  }
+  return includeRange ? degFull : degFull.replace(/\s*\(.*?\)/,'').trim();
+}
+
 // ── Generate HTML output ──────────────────────────────────────
 function generate(){
   const ltSrc=document.getElementById('pta-src-lt').value;
@@ -947,30 +988,11 @@ function generate(){
   }
 
   // ── Combined per-ear summary lines: LE left | RE right ──
-  // Format: LT: 30.00 dB — Mild Sensorineural Hearing Loss (21–40 dB HL)
+  // Format: LT: 30.00 dB — Mild Sensorineural Hearing Loss  (NO dB range in output)
   let classHTML='', reportHTML='';
   if(showType){
-    // Build combined label: degree adjective + type noun merged into one phrase
-    function combinedLabel(ptaVal, type){
-      if(ptaVal===null) return null;
-      // Degree adjective (strip trailing "Hearing Loss" / "Hearing")
-      const degFull=gradeLabel(ptaVal); // e.g. "Mild Hearing Loss (21–40 dB HL)"
-      // Extract bracket range e.g. "(21–40 dB HL)"
-      const rangeMatch=degFull.match(/\(.*?\)/);
-      const range=rangeMatch?rangeMatch[0]:'';
-      // Degree word(s) before "Hearing"
-      const degWord=degFull.replace(/Hearing.*$/,'').trim(); // e.g. "Mild" / "Moderately Severe"
-      // Type word(s): use type.type but strip trailing "Hearing Loss" then re-add
-      const typeName=type&&type.type&&type.type!=='—'?type.type:'';
-      if(typeName){
-        // e.g. typeName = "Sensorineural Hearing Loss"
-        // combined = "Mild Sensorineural Hearing Loss (21–40 dB HL)"
-        return`${degWord} ${typeName} ${range}`.trim();
-      }
-      return degFull;
-    }
-    const ltCombined = combinedLabel(lt, ltType);
-    const rtCombined = combinedLabel(rt, rtType);
+    const ltCombined = buildCombinedLabel(lt, ltType, false);
+    const rtCombined = buildCombinedLabel(rt, rtType, false);
     const ltSummary = lt!==null
       ? `<b style="color:#1a5fb5;">LT: ${ltStr} dB</b> — <span style="color:${ltColor};">${ltCombined}</span>`
       : `<b style="color:#1a5fb5;">LT: ___</b>`;
@@ -982,7 +1004,7 @@ function generate(){
         <div style="display:table-cell;text-align:left;padding-right:8px;">${ltSummary}</div>
         <div style="display:table-cell;text-align:right;padding-left:8px;">${rtSummary}</div>
       </div>
-    </div><div style="font-size:9px;color:#aaa;margin-top:1px;">(${fNote})</div>`;
+    </div>`;
 
     // Report lines: LE left, RE right in two cells
     const ltLine=ltType.reportLine?`<i style="color:#444;"><b>LT:</b> ${ltType.reportLine}</i>`:'';
