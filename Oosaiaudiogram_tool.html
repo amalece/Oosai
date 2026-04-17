@@ -178,6 +178,14 @@
     .tip strong{color:#5a4000;}
     .tip code{background:#f5e9b8;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;}
 
+    /* ── Rinne / Weber ── */
+    .rw-section{margin-top:8px;}
+    .rw-row{display:grid;grid-template-columns:28px 1fr 1fr;gap:5px;align-items:center;margin-bottom:5px;}
+    .rw-row:last-child{margin-bottom:0;}
+    .rw-label{font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;display:block;margin-bottom:2px;}
+    .rw-head{display:grid;grid-template-columns:28px 1fr 1fr;gap:5px;margin-bottom:4px;}
+    .srt-compact select.rw-sel{width:100%;border:1.5px solid #e0e5ef;border-radius:5px;padding:4px 5px;font-size:11px;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
+
     /* ── Sidebar section divider ── */
     .sdiv{height:1px;background:#eef1f6;margin:12px 0;}
 
@@ -304,9 +312,10 @@
 
         <div class="sdiv"></div>
 
-        <!-- SRT / TDT / STAT -->
+        <!-- SRT / TDT / STAT / Rinne / Weber -->
         <div class="section-label">SRT &amp; Additional Tests</div>
         <div class="srt-compact">
+          <!-- SRT / TDT / STAT -->
           <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:5px;margin-bottom:4px;">
             <div></div>
             <div><label>SRT (dB)</label></div>
@@ -324,6 +333,53 @@
             <input type="text" id="srt-le" maxlength="6" placeholder="e.g. 40">
             <select id="tdt-le"><option value="">—</option><option>Normal</option><option>Abnormal</option></select>
             <select id="stat-le"><option value="">—</option><option>Pass</option><option>Fail</option></select>
+          </div>
+
+          <!-- Rinne & Weber -->
+          <div class="rw-section">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;margin-top:4px;">
+              <span style="font-size:10px;font-weight:700;color:#555;">Rinne &amp; Weber Tests</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <label class="toggle-switch" style="width:28px;height:16px;">
+                  <input type="checkbox" id="rwToggle" checked>
+                  <span class="toggle-slider" style="border-radius:16px;"></span>
+                </label>
+                <label class="tgl-lbl" for="rwToggle" style="font-size:10px;">Include in output</label>
+              </div>
+            </div>
+            <div class="rw-head">
+              <div></div>
+              <div><label class="rw-label">Rinne Test</label></div>
+              <div><label class="rw-label">Weber Test</label></div>
+            </div>
+            <div class="rw-row">
+              <span class="srt-ear-tag re">RE</span>
+              <select id="rinne-re" class="rw-sel">
+                <option value="">—</option>
+                <option>Positive (AC>BC)</option>
+                <option>Negative (BC>AC)</option>
+                <option>False Negative</option>
+              </select>
+              <select id="weber-re" class="rw-sel">
+                <option value="">—</option>
+                <option>Midline</option>
+                <option>Lateralises to RE</option>
+                <option>Lateralises to LE</option>
+              </select>
+            </div>
+            <div class="rw-row">
+              <span class="srt-ear-tag le">LE</span>
+              <select id="rinne-le" class="rw-sel">
+                <option value="">—</option>
+                <option>Positive (AC>BC)</option>
+                <option>Negative (BC>AC)</option>
+                <option>False Negative</option>
+              </select>
+              <select id="weber-le" class="rw-sel" disabled style="opacity:0.4;cursor:not-allowed;" title="Weber is a midline test — enter result under RE">
+                <option value="">— (use RE row)</option>
+              </select>
+            </div>
+            <div style="font-size:9px;color:#aaa;margin-top:4px;">Weber is a midline test — result entered under RE row</div>
           </div>
         </div>
 
@@ -544,8 +600,9 @@ function abgAtFreq(acId,bcId,f){
 }
 
 function calcAvgABG(acId,bcId){
-  const active=formula===3?PTA3:PTA4;
-  const vals=active.map(f=>abgAtFreq(acId,bcId,f)).filter(v=>v!==null);
+  // ABG average always uses 500+1k+2k per clinical spec (regardless of PTA formula)
+  const ABG_FREQS=['500','1k','2k'];
+  const vals=ABG_FREQS.map(f=>abgAtFreq(acId,bcId,f)).filter(v=>v!==null);
   if(!vals.length) return null;
   return vals.reduce((a,b)=>a+b,0)/vals.length;
 }
@@ -576,31 +633,53 @@ function gradeLabel(p){
 }
 
 // ── Hearing type classification ───────────────────────────────
+// Criteria (ABG avg = 500+1k+2k):
+//   Normal:      BC < 20, AC < 20, ABG 0–10
+//   Conductive:  BC < 20, AC ≥ 21, ABG > 5
+//   Mixed:       BC ≥ 21, AC ≥ 21, ABG > 15
+//   SNHL:        BC ≥ 21, AC ≥ 21, ABG ≤ 15
 function classifyType(acPTA, bcPTA, avgABG){
   if(acPTA===null&&bcPTA===null) return{type:'—',cssClass:'type-nd',detail:'No data entered',reportLine:''};
   const ac=acPTA!==null?acPTA:999;
   const bc=bcPTA!==null?bcPTA:999;
   const abg=avgABG!==null?avgABG:0;
-  if(ac<20&&bc<20)
+
+  // Normal: BC < 20, AC < 20, ABG 0–10
+  if(bc<20&&ac<20&&abg<=10)
     return{type:'Normal Hearing',cssClass:'type-normal',
-      detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ≈ 0`,
+      detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB`,
       reportLine:'Hearing within normal limits.'};
-  if(ac>=20&&bc<20&&abg>=10)
+
+  // Conductive: BC < 20, AC ≥ 21, ABG > 5
+  if(bc<20&&ac>=21&&abg>5)
     return{type:'Conductive Hearing Loss',cssClass:'type-conductive',
       detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB`,
-      reportLine:`Hearing loss with normal bone conduction and significant air–bone gap (${abg.toFixed(0)} dB), suggestive of conductive pathology.`};
-  if(ac>=20&&bc>=20&&abg<10)
-    return{type:'Sensorineural Hearing Loss',cssClass:'type-snhl',
-      detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB`,
-      reportLine:`Hearing loss with no significant air–bone gap (${abg.toFixed(0)} dB), consistent with sensorineural origin.`};
-  if(ac>=20&&bc>=20&&abg>=10)
+      reportLine:`Hearing loss with normal bone conduction and air–bone gap of ${abg.toFixed(0)} dB, suggestive of conductive pathology.`};
+
+  // Mixed: BC ≥ 21, AC ≥ 21, ABG > 15
+  if(bc>=21&&ac>=21&&abg>15)
     return{type:'Mixed Hearing Loss',cssClass:'type-mixed',
       detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB`,
       reportLine:`Hearing loss with elevated bone thresholds and significant air–bone gap (${abg.toFixed(0)} dB), indicating mixed hearing loss.`};
-  if(ac>=20)
-    return{type:'Hearing Loss (type TBD)',cssClass:'type-nd',
-      detail:`AC ${ac.toFixed(1)} dB · BC data insufficient`,
-      reportLine:'Elevated air conduction thresholds noted. BC data required to classify type.'};
+
+  // SNHL: BC ≥ 21, AC ≥ 21, ABG ≤ 15
+  if(bc>=21&&ac>=21&&abg<=15)
+    return{type:'Sensorineural Hearing Loss',cssClass:'type-snhl',
+      detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB`,
+      reportLine:`Hearing loss with no significant air–bone gap (${abg.toFixed(0)} dB), consistent with sensorineural origin.`};
+
+  // Edge: only AC elevated, BC not measured
+  if(ac>=21&&bcPTA===null)
+    return{type:'Hearing Loss (BC data needed)',cssClass:'type-nd',
+      detail:`AC ${ac.toFixed(1)} dB · BC not entered`,
+      reportLine:'Elevated air conduction noted. Bone conduction data required to classify type.'};
+
+  // Edge: AC elevated, BC normal but ABG ≤ 5 (borderline)
+  if(bc<20&&ac>=21&&abg<=5)
+    return{type:'Conductive (borderline ABG)',cssClass:'type-conductive',
+      detail:`AC ${ac.toFixed(1)} dB · BC ${bc.toFixed(1)} dB · ABG ${abg.toFixed(1)} dB (borderline)`,
+      reportLine:`Elevated air conduction with borderline air–bone gap (${abg.toFixed(0)} dB). Clinical correlation advised.`};
+
   return{type:'—',cssClass:'type-nd',detail:'Insufficient data',reportLine:''};
 }
 
@@ -636,8 +715,8 @@ function recalc(){
   // ABG display
   document.getElementById('lt-abg-display').textContent=ltABG!==null?ltABG.toFixed(1)+' dB':'—';
   document.getElementById('rt-abg-display').textContent=rtABG!==null?rtABG.toFixed(1)+' dB':'—';
-  document.getElementById('lt-abg-note').textContent=ltABG!==null?(ltABG>=10?'⚠ Significant gap (≥10 dB)':'✓ No significant gap'):'';
-  document.getElementById('rt-abg-note').textContent=rtABG!==null?(rtABG>=10?'⚠ Significant gap (≥10 dB)':'✓ No significant gap'):'';
+  document.getElementById('lt-abg-note').textContent=ltABG!==null?(ltABG>15?'⚠ Significant (>15 dB — Mixed)':ltABG>5?'⚠ Significant (>5 dB — Conductive)':'✓ Normal gap (≤5 dB)'):'';
+  document.getElementById('rt-abg-note').textContent=rtABG!==null?(rtABG>15?'⚠ Significant (>15 dB — Mixed)':rtABG>5?'⚠ Significant (>5 dB — Conductive)':'✓ Normal gap (≤5 dB)'):'';
 
   // ABG grid cells
   FREQS.forEach(f=>{
@@ -1019,19 +1098,33 @@ function generate(){
     }
   }
 
-  // SRT/TDT/STAT
+  // SRT/TDT/STAT + Rinne/Weber
   const srtRE=document.getElementById('srt-re').value.trim();
   const srtLE=document.getElementById('srt-le').value.trim();
   const tdtRE=document.getElementById('tdt-re').value;
   const tdtLE=document.getElementById('tdt-le').value;
   const statRE=document.getElementById('stat-re').value;
   const statLE=document.getElementById('stat-le').value;
+  const rinneRE=document.getElementById('rinne-re').value;
+  const rinneLE=document.getElementById('rinne-le').value;
+  const weberRE=document.getElementById('weber-re').value;
+  const showRW=document.getElementById('rwToggle').checked;
   let srtHTML='';
-  if(srtRE||srtLE||tdtRE||tdtLE||statRE||statLE){
+  const hasSRT=srtRE||srtLE||tdtRE||tdtLE||statRE||statLE;
+  const hasRW=showRW&&(rinneRE||rinneLE||weberRE);
+  if(hasSRT||hasRW){
     let rows='';
-    if(srtRE||tdtRE||statRE) rows+=`<tr><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#c0392b;">RE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${srtRE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${tdtRE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${statRE||'—'}</td></tr>`;
-    if(srtLE||tdtLE||statLE) rows+=`<tr style="background:#f9f9f9;"><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#1a5fb5;">LE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${srtLE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${tdtLE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${statLE||'—'}</td></tr>`;
-    srtHTML=`<table style="border-collapse:collapse;font-size:10px;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 6px;"><b>Ear</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>SRT (dB)</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>TDT</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>STAT</b></td></tr>${rows}</table>`;
+    if(hasSRT){
+      if(srtRE||tdtRE||statRE) rows+=`<tr><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#c0392b;">RE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${srtRE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${tdtRE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${statRE||'—'}</td></tr>`;
+      if(srtLE||tdtLE||statLE) rows+=`<tr style="background:#f9f9f9;"><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#1a5fb5;">LE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${srtLE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${tdtLE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${statLE||'—'}</td></tr>`;
+      srtHTML+=`<table style="border-collapse:collapse;font-size:10px;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 6px;"><b>Ear</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>SRT (dB)</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>TDT</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>STAT</b></td></tr>${rows}</table>`;
+    }
+    if(hasRW){
+      let rwRows='';
+      if(rinneRE||weberRE) rwRows+=`<tr><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#c0392b;">RE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${rinneRE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${weberRE||'—'}</td></tr>`;
+      if(rinneLE) rwRows+=`<tr style="background:#f9f9f9;"><td style="border:1px solid #ccc;padding:2px 6px;font-weight:bold;color:#1a5fb5;">LE</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">${rinneLE||'—'}</td><td style="border:1px solid #ccc;padding:2px 6px;text-align:center;">—</td></tr>`;
+      if(rwRows) srtHTML+=`<table style="border-collapse:collapse;font-size:10px;margin-top:4px;"><tr style="background:#f0f0f0;"><td style="border:1px solid #ccc;padding:2px 6px;"><b>Ear</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>Rinne Test</b></td><td style="border:1px solid #ccc;padding:2px 6px;"><b>Weber Test</b></td></tr>${rwRows}</table>`;
+    }
   }
 
   const svgL=buildSVGChart(false),svgR=buildSVGChart(true);
@@ -1066,7 +1159,7 @@ function clearAll(){
     const nr=document.getElementById(`NR_${row.id}_${f}`);if(nr)nr.checked=false;
   }));
   ['srt-re','srt-le'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['tdt-re','tdt-le','stat-re','stat-le'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+  ['tdt-re','tdt-le','stat-re','stat-le','rinne-re','rinne-le','weber-re'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
   document.getElementById('outputs-wrapper').style.display='none';
   recalc();
 }
