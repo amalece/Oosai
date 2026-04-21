@@ -633,29 +633,37 @@
             </div>
           </div>
 
-          <!-- Row 3: Audiometer + Clinical in two columns -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-            <div style="background:#fff;border:1.5px solid #e4e8f0;border-radius:10px;padding:12px 16px;">
-              <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🔬 Audiometer</div>
-              <div class="rx-field" style="margin-bottom:8px;"><label>Model</label><input type="text" id="rx-audiometer" value="DIGI RS-1"></div>
+          <!-- Row 3: Audiometer -->
+          <div style="background:#fff;border:1.5px solid #e4e8f0;border-radius:10px;padding:12px 16px;margin-bottom:14px;">
+            <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🔬 Audiometer</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="rx-field"><label>Model</label><input type="text" id="rx-audiometer" value="DIGI RS-1"></div>
               <div class="rx-field"><label>Calibration Date</label><input type="text" id="rx-calibration" value="January 2026"></div>
-            </div>
-            <div style="background:#fff;border:1.5px solid #e4e8f0;border-radius:10px;padding:12px 16px;">
-              <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
-                ⚡ Clinical Summary
-                <span style="background:#eef3ff;border:1px solid #a8c0f0;border-radius:4px;padding:2px 6px;font-size:9px;color:#1a5fb5;font-weight:600;margin-left:4px;">Auto-filled</span>
-              </div>
-              <div style="background:#f7f9fc;border-radius:6px;padding:7px 10px;margin-bottom:6px;font-size:10.5px;">
-                <div style="color:#1a5fb5;font-weight:600;margin-bottom:2px;" id="rxDiagLT">LT: —</div>
-                <div style="color:#c0392b;font-weight:600;" id="rxDiagRT">RT: —</div>
-              </div>
             </div>
           </div>
 
-          <!-- Row 4: Provisional Diagnosis -->
+          <!-- Row 4: Clinical Summary (live from audiogram) + Provisional Diagnosis -->
           <div style="background:#fff;border:1.5px solid #e4e8f0;border-radius:10px;padding:12px 16px;margin-bottom:14px;">
-            <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">📝 Provisional Diagnosis <span style="font-size:9px;color:#aaa;text-transform:none;font-weight:400;">(optional — overrides auto summary)</span></div>
-            <textarea id="rx-diag" placeholder="e.g. RT: Severe conductive hearing loss, LT: Moderate mixed hearing loss" rows="2" style="width:100%;border:1.5px solid #e0e5ef;border-radius:7px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none;"></textarea>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+              <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;">📊 Audiogram Summary</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span id="rxDiagFreshBadge" style="display:none;background:#e6f9f0;border:1px solid #a8dfc0;border-radius:4px;padding:2px 7px;font-size:9px;color:#1a7a4a;font-weight:600;">⚡ Live from audiogram</span>
+                <span id="rxDiagSavedBadge" style="display:none;background:#fff8ee;border:1px solid #f5c080;border-radius:4px;padding:2px 7px;font-size:9px;color:#7a4800;font-weight:600;">📁 From saved record</span>
+                <button onclick="rxRefreshDiag()" title="Re-read from current audiogram values" style="background:#eef3ff;color:#004aad;border:1px solid #a8c0f0;border-radius:5px;padding:3px 9px;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">↺ Refresh</button>
+              </div>
+            </div>
+            <div style="background:#f7f9fc;border:1px solid #e4e8f0;border-radius:7px;padding:9px 12px;margin-bottom:12px;">
+              <div style="color:#1a5fb5;font-weight:600;font-size:11px;line-height:1.5;" id="rxDiagLT">LT: —</div>
+              <div style="color:#c0392b;font-weight:600;font-size:11px;line-height:1.5;" id="rxDiagRT">RT: —</div>
+              <div id="rxDiagEmpty" style="color:#aaa;font-size:11px;display:none;">No audiogram data — enter values in the main grid first.</div>
+            </div>
+            <div class="rx-field">
+              <label style="display:flex;align-items:center;gap:6px;">
+                📝 Provisional Diagnosis
+                <span style="font-size:9px;color:#aaa;font-weight:400;text-transform:none;">(optional — if filled, this prints instead of the summary above)</span>
+              </label>
+              <textarea id="rx-diag" placeholder="Leave blank to use the auto summary above, or type a custom diagnosis here..." rows="2" style="width:100%;border:1.5px solid #e0e5ef;border-radius:7px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none;margin-top:4px;"></textarea>
+            </div>
           </div>
 
           <!-- Row 5: Clinic info (collapsible-look) -->
@@ -694,7 +702,7 @@ Thank you for choosing us for your hearing care needs.</textarea>
         <!-- ── RECORDS PANEL ── -->
         <div class="rx-panel" id="rxPanelRecords">
           <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
-            <input type="text" id="rxSearchInput" placeholder="🔍 Search by order # or patient name..." oninput="rxRenderList()" style="flex:1;border:1.5px solid #e0e5ef;border-radius:7px;padding:7px 12px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
+            <input type="text" id="rxSearchInput" placeholder="🔍 Search by order #, name or phone..." oninput="rxRenderList()" style="flex:1;border:1.5px solid #e0e5ef;border-radius:7px;padding:7px 12px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
             <button class="rx-btn rx-btn-secondary" onclick="document.getElementById('rxSearchInput').value='';rxRenderList()">Clear</button>
             <button class="rx-btn rx-btn-primary" onclick="rxClearForm();rxTab('new')">➕ New</button>
           </div>
@@ -1489,7 +1497,6 @@ function rxSaveStore(){ try{ localStorage.setItem(RX_KEY,JSON.stringify(rxRecord
 // ── Modal open/close/tabs ─────────────────────────────────────
 function openRx(){
   rxLoad();
-  rxAutoFill();
   // set today as default date if empty
   const d=document.getElementById('rx-date');
   if(!d.value) d.value=new Date().toISOString().slice(0,10);
@@ -1502,6 +1509,8 @@ function openRx(){
   rxLoad();
   const hasRecords=Object.keys(rxRecords).length>0;
   rxTab(hasRecords?'records':'new');
+  // Always refresh diagnosis from live audiogram when opening
+  setTimeout(rxRefreshDiag, 50);
 }
 function closeRx(){ document.getElementById('rxOverlay').classList.remove('open'); document.body.style.overflow=''; }
 function rxOverlayClick(e){ if(e.target===document.getElementById('rxOverlay')) closeRx(); }
@@ -1527,21 +1536,41 @@ function rxTab(t){
 
 // ── Auto-fill diagnosis from current audiogram ────────────────
 function rxAutoFill(){
+  // Don't overwrite saved diagnosis values when editing an existing record
+  const banner=document.getElementById('rxEditBanner');
+  if(banner&&banner.dataset.editing) return;
+  rxRefreshDiag();
+}
+
+// ── Refresh diagnosis from live audiogram ─────────────────────
+function rxRefreshDiag(){
   const ltSrc=document.getElementById('pta-src-lt')?.value;
   const rtSrc=document.getElementById('pta-src-rt')?.value;
   const bcLt=document.getElementById('bc-src-lt')?.value;
   const bcRt=document.getElementById('bc-src-rt')?.value;
-  if(!ltSrc) return;
+  const ltEl=document.getElementById('rxDiagLT');
+  const rtEl=document.getElementById('rxDiagRT');
+  const emptyEl=document.getElementById('rxDiagEmpty');
+  const freshBadge=document.getElementById('rxDiagFreshBadge');
+  const savedBadge=document.getElementById('rxDiagSavedBadge');
+  if(!ltSrc){ return; }
   const lt=calcPTA(ltSrc), rt=calcPTA(rtSrc);
   const bcLtP=calcPTA(bcLt), bcRtP=calcPTA(bcRt);
   const ltABG=calcAvgABG(ltSrc,bcLt), rtABG=calcAvgABG(rtSrc,bcRt);
   const ltType=classifyType(lt,bcLtP,ltABG);
   const rtType=classifyType(rt,bcRtP,rtABG);
-  const ltStr=lt!==null?`LT: ${lt.toFixed(2)} dB — ${buildCombinedLabel(lt,ltType,true)}`:'LT: No data';
-  const rtStr=rt!==null?`RT: ${rt.toFixed(2)} dB — ${buildCombinedLabel(rt,rtType,true)}`:'RT: No data';
-  const ltEl=document.getElementById('rxDiagLT'), rtEl=document.getElementById('rxDiagRT');
-  if(ltEl) ltEl.textContent=ltStr;
-  if(rtEl) rtEl.textContent=rtStr;
+  const hasLT=lt!==null;
+  const hasRT=rt!==null;
+  const ltStr=hasLT?`LT: ${lt.toFixed(2)} dB — ${buildCombinedLabel(lt,ltType,true)}`:'';
+  const rtStr=hasRT?`RT: ${rt.toFixed(2)} dB — ${buildCombinedLabel(rt,rtType,true)}`:'';
+  if(ltEl){ ltEl.textContent=ltStr||''; ltEl.style.display=ltStr?'':'none'; }
+  if(rtEl){ rtEl.textContent=rtStr||''; rtEl.style.display=rtStr?'':'none'; }
+  if(emptyEl) emptyEl.style.display=(!hasLT&&!hasRT)?'block':'none';
+  if(freshBadge) freshBadge.style.display=(hasLT||hasRT)?'':'none';
+  if(savedBadge) savedBadge.style.display='none';
+  // Mark as editing fresh data so save picks up new values
+  const banner=document.getElementById('rxEditBanner');
+  if(banner&&banner.dataset.editing){ delete banner.dataset.editing; }
 }
 
 // ── Collect audiogram data snapshot ──────────────────────────
@@ -1583,8 +1612,8 @@ function rxSave(){
     audiometer:document.getElementById('rx-audiometer').value.trim(),
     calibration:document.getElementById('rx-calibration').value.trim(),
     diag:document.getElementById('rx-diag').value.trim(),
-    diagAutoLT:document.getElementById('rxDiagLT')?.textContent||'',
-    diagAutoRT:document.getElementById('rxDiagRT')?.textContent||'',
+    diagAutoLT:(()=>{ const t=(document.getElementById('rxDiagLT')?.textContent||'').trim(); return t&&t.includes('dB')&&!t.toLowerCase().includes('no data')?t:''; })(),
+    diagAutoRT:(()=>{ const t=(document.getElementById('rxDiagRT')?.textContent||'').trim(); return t&&t.includes('dB')&&!t.toLowerCase().includes('no data')?t:''; })(),
     clinic:document.getElementById('rx-clinic').value.trim(),
     clinicAddr:document.getElementById('rx-clinic-addr').value.trim(),
     clinicEmail:document.getElementById('rx-clinic-email').value.trim(),
@@ -1616,7 +1645,7 @@ function rxRenderList(){
   const list=document.getElementById('rxRecordList');
   if(!list) return;
   const all=Object.values(rxRecords).sort((a,b)=>new Date(b.savedAt||0)-new Date(a.savedAt||0));
-  const filtered=q?all.filter(r=>(r.order+'').toLowerCase().includes(q)||(r.name||'').toLowerCase().includes(q)):all;
+  const filtered=q?all.filter(r=>(r.order+'').toLowerCase().includes(q)||(r.name||'').toLowerCase().includes(q)||(r.phone||'').toLowerCase().includes(q)):all;
   if(!filtered.length){
     list.innerHTML=`<div style="text-align:center;padding:40px;color:#aaa;">
       <div style="font-size:32px;margin-bottom:8px;">📋</div>
@@ -1642,11 +1671,17 @@ function rxRenderList(){
         </div>
         <div style="font-size:9px;color:${isSelected?'rgba(255,255,255,0.6)':'#bbb'};text-align:right;">Saved<br>${savedStr}</div>
       </div>
-      <!-- Card body: diagnosis preview -->
-      ${ltDiag||rtDiag?`<div style="padding:8px 14px;background:${isSelected?'#f0f5ff':'#fafbfd'};border-bottom:1px solid ${isSelected?'#c5d3f5':'#f0f0f0'};">
-        ${ltDiag?`<div style="font-size:10px;color:#1a5fb5;font-weight:600;line-height:1.4;">${ltDiag}</div>`:''}
-        ${rtDiag?`<div style="font-size:10px;color:#c0392b;font-weight:600;line-height:1.4;">${rtDiag}</div>`:''}
-      </div>`:''}
+      <!-- Card body: diagnosis preview (only real data, no "No data" strings) -->
+      ${(()=>{
+        const hasVal=s=>s&&s.includes('dB')&&!s.toLowerCase().includes('no data')&&s!=='LT: —'&&s!=='RT: —';
+        const ltShow=hasVal(ltDiag)?ltDiag:'';
+        const rtShow=hasVal(rtDiag)?rtDiag:'';
+        if(!ltShow&&!rtShow) return '';
+        return `<div style="padding:8px 14px;background:${isSelected?'#f0f5ff':'#fafbfd'};border-bottom:1px solid ${isSelected?'#c5d3f5':'#f0f0f0'};">
+          ${ltShow?`<div style="font-size:10px;color:#1a5fb5;font-weight:600;line-height:1.4;">${ltShow}</div>`:''}
+          ${rtShow?`<div style="font-size:10px;color:#c0392b;font-weight:600;line-height:1.4;">${rtShow}</div>`:''}
+        </div>`;
+      })()}
       <!-- Card footer: action buttons -->
       <div style="padding:8px 12px;display:flex;gap:6px;align-items:center;" onclick="event.stopPropagation()">
         <button class="rx-btn" onclick="rxEditRecord('${r.order}')" style="background:#e8f0fe;color:#004aad;border:1px solid #a8c0f0;font-size:10px;padding:4px 10px;">✏️ Edit</button>
@@ -1680,10 +1715,6 @@ function rxEditRecord(order){
   set('rx-clinic',rec.clinic); set('rx-clinic-addr',rec.clinicAddr);
   set('rx-clinic-email',rec.clinicEmail); set('rx-clinic-mob',rec.clinicMob);
   set('rx-terms',rec.terms);
-  // Restore auto-diagnosis display
-  const ltEl=document.getElementById('rxDiagLT'), rtEl=document.getElementById('rxDiagRT');
-  if(ltEl) ltEl.textContent=rec.diagAutoLT||'LT: —';
-  if(rtEl) rtEl.textContent=rec.diagAutoRT||'RT: —';
   // Show edit banner
   const banner=document.getElementById('rxEditBanner');
   if(banner){
@@ -1697,6 +1728,25 @@ function rxEditRecord(order){
   if(btn) btn.textContent='✏️ Update Prescription';
   rxCurrentOrder=order;
   rxTab('new');
+  // Restore saved diagnosis AFTER tab switch (tab switch calls rxAutoFill which would overwrite)
+  // Use setTimeout to ensure it runs after any auto-fill triggered by the tab switch
+  setTimeout(function(){
+    const ltEl=document.getElementById('rxDiagLT'), rtEl=document.getElementById('rxDiagRT');
+    const emptyEl=document.getElementById('rxDiagEmpty');
+    const freshBadge=document.getElementById('rxDiagFreshBadge');
+    const savedBadge=document.getElementById('rxDiagSavedBadge');
+    const hasVal=s=>s&&s.includes('dB')&&!s.toLowerCase().includes('no data');
+    const ltSaved=rec.diagAutoLT||'';
+    const rtSaved=rec.diagAutoRT||'';
+    const ltShow=hasVal(ltSaved)?ltSaved:'';
+    const rtShow=hasVal(rtSaved)?rtSaved:'';
+    if(ltEl){ ltEl.textContent=ltShow; ltEl.style.display=ltShow?'':'none'; }
+    if(rtEl){ rtEl.textContent=rtShow; rtEl.style.display=rtShow?'':'none'; }
+    if(emptyEl) emptyEl.style.display=(!ltShow&&!rtShow)?'block':'none';
+    // Show saved badge — prompt user to refresh if they changed audiogram values
+    if(freshBadge) freshBadge.style.display='none';
+    if(savedBadge) savedBadge.style.display=(ltShow||rtShow)?'':'none';
+  }, 50);
 }
 
 // ── Clear form and reset edit mode ─────────────────────────────
@@ -1721,9 +1771,15 @@ function rxClearForm(){
   // Reset save button
   const btn=document.getElementById('rxBtnSave');
   if(btn) btn.textContent='💾 Save Prescription';
+  // Reset diagnosis display
+  const ltEl=document.getElementById('rxDiagLT'); if(ltEl){ltEl.textContent='';ltEl.style.display='none';}
+  const rtEl=document.getElementById('rxDiagRT'); if(rtEl){rtEl.textContent='';rtEl.style.display='none';}
+  const emptyEl=document.getElementById('rxDiagEmpty'); if(emptyEl) emptyEl.style.display='none';
+  const freshBadge=document.getElementById('rxDiagFreshBadge'); if(freshBadge) freshBadge.style.display='none';
+  const savedBadge=document.getElementById('rxDiagSavedBadge'); if(savedBadge) savedBadge.style.display='none';
   rxCurrentOrder=null;
-  // Refresh auto diagnosis
-  rxAutoFill();
+  // Refresh auto diagnosis from live audiogram
+  rxRefreshDiag();
 }
 
 function rxDelete(order){
@@ -1873,9 +1929,29 @@ function rxBuildPDFHTML(rec){
     rwTable=`<table style="border-collapse:collapse;font-size:9pt;margin-top:4px;border:1px solid #ddd;width:auto"><tr style="background:#f0f0f0"><td style="padding:3px 6px;font-weight:700;border-bottom:1px solid #ddd"><b>Ear</b></td><td style="padding:3px 6px;font-weight:700;border-bottom:1px solid #ddd"><b>Rinne Test</b></td><td style="padding:3px 6px;font-weight:700;border-bottom:1px solid #ddd"><b>Weber Test</b></td></tr>${rrows}</table>`;
   }
 
-  // Diagnosis text
-  const diagText=rec.diag||`${rec.diagAutoLT||''}${rec.diagAutoRT?'\n'+rec.diagAutoRT:''}`;
-  const diagLines=diagText.trim().split('\n').filter(Boolean);
+  // Diagnosis text — only show if there is real content (not empty / "No data")
+  const diagManual=(rec.diag||'').trim();
+  const diagAutoLT=(rec.diagAutoLT||'').trim();
+  const diagAutoRT=(rec.diagAutoRT||'').trim();
+  // A value is "real" if it exists, doesn't contain "No data", and isn't just a bare label
+  const hasRealData=s=>{
+    if(!s) return false;
+    const low=s.toLowerCase();
+    if(low.includes('no data')) return false;
+    if(s==='LT: —'||s==='RT: —'||s==='LT:'||s==='RT:') return false;
+    // Must contain actual dB reading to be meaningful
+    if(!s.includes('dB')) return false;
+    return true;
+  };
+  let diagLines=[];
+  if(diagManual){
+    // Manual diagnosis: print each non-empty line
+    diagLines=diagManual.split('\n').filter(l=>l.trim());
+  } else {
+    // Auto diagnosis: only include lines with real audiogram data
+    if(hasRealData(diagAutoLT)) diagLines.push(diagAutoLT);
+    if(hasRealData(diagAutoRT)) diagLines.push(diagAutoRT);
+  }
 
   // Terms
   const terms=(rec.terms||'').split('\n').filter(Boolean);
