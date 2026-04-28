@@ -737,7 +737,7 @@ let isDrawing=false;
       html+=`<td>
         <div class="cell-w">
           <input type="text" id="${cellId}" maxlength="5" placeholder="" oninput="recalc()">
-          <div class="nr-wrap"><input type="checkbox" id="${nrId}" onchange="recalc()" title="No Response"><span>NR</span></div>
+          <div class="nr-wrap"><input type="checkbox" id="${nrId}" onchange="recalc()" title="No Response" tabindex="-1"><span>NR</span></div>
         </div>
       </td>`;
     });
@@ -1854,7 +1854,7 @@ body{width:210mm;background:#fff;font-family:'DM Sans',Arial,sans-serif;font-siz
 .hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:2.5px solid #004aad;}
 .hdr-title{font-size:22pt;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;}
 .hdr-sub{font-size:9pt;color:#666;font-style:italic;}
-.hdr-logo{height:64px;width:64px;object-fit:contain;border-radius:8px;border:2px solid #e4e8f0;padding:4px;background:#fff;}
+.hdr-logo{height:64px;width:64px;object-fit:contain;border-radius:8px;background:#004aad;padding:6px;}
 .clinic-name{font-size:12pt;font-weight:700;color:#004aad;margin-bottom:3px;}
 .clinic-info{font-size:8pt;color:#555;line-height:1.6;}
 .meta-bar{display:flex;margin-bottom:10px;border:1.5px solid #e4e8f0;border-radius:8px;overflow:hidden;}
