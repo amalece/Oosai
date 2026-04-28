@@ -1844,9 +1844,9 @@ function rxBuildPDFHTML(rec){
 *{box-sizing:border-box;margin:0;padding:0;}
 @page{size:A4 portrait;margin:0;}
 html{width:210mm;background:#fff;}
-body{width:210mm;background:#fff;font-family:'DM Sans',Arial,sans-serif;font-size:9.5pt;color:#1a1a1a;padding:0;overflow:hidden;}
-@media print{html,body{width:210mm;height:297mm;overflow:hidden;}}
-.scale-wrap{width:210mm;transform-origin:top left;position:relative;overflow:hidden;}
+body{width:210mm;background:#fff;font-family:'DM Sans',Arial,sans-serif;font-size:9.5pt;color:#1a1a1a;padding:0;}
+@media print{html,body{width:210mm;}}
+.scale-wrap{width:210mm;transform-origin:top left;position:relative;}
 .page{width:190mm;margin:0 auto;padding:10mm 0;position:relative;z-index:1;}
 /* Watermark */
 .watermark{position:absolute;top:0;left:0;width:210mm;height:297mm;pointer-events:none;z-index:999;overflow:hidden;}
@@ -1885,17 +1885,15 @@ body{width:210mm;background:#fff;font-family:'DM Sans',Arial,sans-serif;font-siz
   var mmToPx=function(mm){return mm*(96/25.4);};
   var pageW=mmToPx(210),pageH=mmToPx(297);
   var w=document.querySelector('.scale-wrap');
-  if(w){
-    var ch=w.scrollHeight;
+  var pg=document.querySelector('.page');
+  if(w&&pg){
+    // Measure only the page content, not the watermark div
+    var ch=pg.scrollHeight+mmToPx(20); // +20mm for top+bottom padding
     var s=1;
     if(ch>pageH) s=pageH/ch;
     if(s<1){w.style.transform='scale('+s+')';w.style.transformOrigin='top left';}
     w.style.width=pageW+'px';
-    w.style.height=(ch*s)+'px';
-    w.style.overflow='hidden';
     document.body.style.width=pageW+'px';
-    document.body.style.height=(ch*s)+'px';
-    document.body.style.overflow='hidden';
     document.body.style.margin='0';
   }
   document.fonts.ready.then(function(){setTimeout(function(){window.print();},400);});
