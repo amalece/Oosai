@@ -822,18 +822,27 @@ function classifyType(acPTA,bcPTA,avgABG){
   const ac=acPTA!==null?acPTA:999;
   const bc=bcPTA!==null?bcPTA:999;
   const abg=avgABG!==null?avgABG:0;
-  if(bc<20&&ac<20&&abg<=10)
-    return{type:'Normal Hearing',cssClass:'type-normal',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:'Hearing within normal limits.'};
-  if(bc<20&&ac>=21&&abg>5)
-    return{type:'Conductive Hearing Loss',cssClass:'type-conductive',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with normal bone conduction and air–bone gap of ${abg.toFixed(0)} dB, suggestive of conductive pathology.`};
-  if(bc>=21&&ac>=21&&abg>15)
-    return{type:'Mixed Hearing Loss',cssClass:'type-mixed',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with elevated bone thresholds and significant air–bone gap (${abg.toFixed(0)} dB), indicating mixed hearing loss.`};
-  if(bc>=21&&ac>=21&&abg<=15)
-    return{type:'Sensorineural Hearing Loss',cssClass:'type-snhl',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with no significant air–bone gap (${abg.toFixed(0)} dB), consistent with sensorineural origin.`};
-  if(bc<20&&ac>=21&&abg<=5)
-    return{type:'Conductive (borderline ABG)',cssClass:'type-conductive',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Elevated air conduction with borderline air–bone gap (${abg.toFixed(0)} dB). Clinical correlation advised.`};
-  if(ac>=21&&bcPTA===null)
+  // AC elevated but BC not entered — must check before mixed/snhl
+  if(ac>20&&bcPTA===null)
     return{type:'Hearing Loss (BC needed)',cssClass:'type-nd',detail:`AC ${ac.toFixed(1)} · BC not entered`,reportLine:'Elevated air conduction. Bone conduction data required to classify type.'};
+  // BC elevated but AC not entered
+  if(bc>20&&acPTA===null)
+    return{type:'Hearing Loss (AC needed)',cssClass:'type-nd',detail:`BC ${bc.toFixed(1)} · AC not entered`,reportLine:'Elevated bone conduction. Air conduction data required to classify type.'};
+  // Normal: BC<=20, AC<=20, ABG<=10
+  if(bc<=20&&ac<=20&&abg<=10)
+    return{type:'Normal Hearing',cssClass:'type-normal',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:'Hearing within normal limits.'};
+  // Conductive: BC normal (<=20), AC elevated (>20), ABG significant (>5)
+  if(bc<=20&&ac>20&&abg>5)
+    return{type:'Conductive Hearing Loss',cssClass:'type-conductive',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with normal bone conduction and air–bone gap of ${abg.toFixed(0)} dB, suggestive of conductive pathology.`};
+  // Mixed: BC elevated (>20), AC elevated (>20), ABG significant (>15)
+  if(bc>20&&ac>20&&abg>15)
+    return{type:'Mixed Hearing Loss',cssClass:'type-mixed',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with elevated bone thresholds and significant air–bone gap (${abg.toFixed(0)} dB), indicating mixed hearing loss.`};
+  // SNHL: BC elevated (>20), AC elevated (>20), ABG not significant (<=15)
+  if(bc>20&&ac>20&&abg<=15)
+    return{type:'Sensorineural Hearing Loss',cssClass:'type-snhl',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Hearing loss with no significant air–bone gap (${abg.toFixed(0)} dB), consistent with sensorineural origin.`};
+  // Conductive borderline: BC normal (<=20), AC elevated (>20), ABG borderline (<=5)
+  if(bc<=20&&ac>20&&abg<=5)
+    return{type:'Conductive (borderline ABG)',cssClass:'type-conductive',detail:`AC ${ac.toFixed(1)} · BC ${bc.toFixed(1)} · ABG ${abg.toFixed(1)} dB`,reportLine:`Elevated air conduction with borderline air–bone gap (${abg.toFixed(0)} dB). Clinical correlation advised.`};
   return{type:'—',cssClass:'type-nd',detail:'Insufficient data',reportLine:''};
 }
 
